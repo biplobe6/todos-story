@@ -46,16 +46,20 @@ const PATH = {
     src: 'app',
     dest: 'dist',
     public: 'public',
+    staticFiles: 'staticFiles'
 }
 
-// /src/app/
+// /src/app
 const srcPath = fullPath(PATH.src);
 
-// /src/dist/
+// /src/dist
 const distPath = fullPath(PATH.dest);
 
-// /src/public/
+// /src/public
 const publicPath = fullPath(PATH.public);
+
+// /src/staticFiles
+const staticFilesPath = fullPath(PATH.staticFiles);
 
 
 module.exports = (env) => {
@@ -71,7 +75,7 @@ module.exports = (env) => {
     const STATIC = 'static';
     const STATIC_URL = PROD_MODE ? `/${STATIC}/` : `/${STATIC}/`;
     const DEVELOPMENT_PORT = getRandom(8200, 8300);
-    const PUBLIC_PATH = PROD_MODE ? `/` : (
+    const PUBLIC_PATH = PROD_MODE ? `/${STATIC}/` : (
         `http://localhost:${DEVELOPMENT_PORT}/${STATIC}/`
     )
 
@@ -227,6 +231,14 @@ module.exports = (env) => {
                 ENV_TYPE: JSON.stringify(env.NODE_ENV),
                 PROD_MODE: PROD_MODE,
                 STATIC_URL: JSON.stringify(STATIC_URL)
+            }),
+            new FileManagerPlugin({
+                onEnd: [{
+                    copy: [{
+                        source: `${staticFilesPath}/*`,
+                        destination: distPath,
+                    }]
+                }]
             }),
             ...(
                 PROD_MODE ? [

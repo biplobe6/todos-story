@@ -1,1 +1,12 @@
-console.log('hello world')
+import { faviconLoader } from './loader';
+
+
+
+
+
+
+
+
+faviconLoader('favicon.ico')
+
+
