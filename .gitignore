@@ -2,3 +2,7 @@ backend/env
 **/__pycache__
 backend/db.sqlite3
 **/.vscode
+
+client/node_modules
+client/dist
+client/yarn.lock
