@@ -12,8 +12,9 @@ export const registerModal = ({id, delay=200}) => (Modal) => {
     }
 
     render(){
+      const {showModalHandler: _, ...props} = this.props;
       return (
-        <Modal {...this.props} />
+        <Modal {...props} />
       )
     }
   }
