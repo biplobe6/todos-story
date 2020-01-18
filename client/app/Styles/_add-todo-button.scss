@@ -1,0 +1,20 @@
+#add-todo-button{
+  position: absolute;
+  top: 50px;
+  right: 50px;
+
+  outline: none;
+  width: 80px;
+  border-radius: 20px;
+
+  .content{
+    text-align: center;
+    padding: 2px 0px;
+    font-size: 25px;
+  }
+
+  &:hover{
+    background-color: #aaa;
+    cursor: pointer;
+  }
+}
