@@ -73,10 +73,10 @@ module.exports = (env) => {
     const PROD_MODE = env.NODE_ENV == "production";
     const CONFIG_MODE = env.NODE_ENV;
     const STATIC = 'static';
-    const STATIC_URL = PROD_MODE ? `/${STATIC}/` : `/${STATIC}/`;
+    const STATIC_URL = PROD_MODE ? `/` : '/';
     const DEVELOPMENT_PORT = getRandom(8200, 8300);
-    const PUBLIC_PATH = PROD_MODE ? `/${STATIC}/` : (
-        `http://localhost:${DEVELOPMENT_PORT}/${STATIC}/`
+    const PUBLIC_PATH = PROD_MODE ? `/` : (
+        `http://localhost:${DEVELOPMENT_PORT}/`
     )
 
     const webpackConfig = {
