@@ -14,6 +14,7 @@ class ModalPlaceHolder extends Component {
     this.showModal = this.showModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.updateModals = this.updateModals.bind(this);
+    this.docClickHandler = this.docClickHandler.bind(this);
 
     this.state = {
       MountedModals: []
@@ -25,6 +26,30 @@ class ModalPlaceHolder extends Component {
     this.setState({
       MountedModals: [...MountedModals]
     }, cb || (() => {}))
+  }
+
+  docClickHandler(event){
+    const {MountedModals} = this.state;
+    if(MountedModals.length == 0) return;
+
+    const lastModalConfig = MountedModals[MountedModals.length - 1]
+    if(!lastModalConfig.ref) return;
+
+    if(!lastModalConfig.show || !lastModalConfig.fadeEffect) return;
+
+    const isInside = lastModalConfig.ref.contains(event.target)
+    const isModalContainer = (event.target == lastModalConfig.ref)
+    if(isInside && !isModalContainer) return;
+
+    lastModalConfig.closeModalHandler()
+  }
+
+  componentDidMount(){
+    document.addEventListener('click', this.docClickHandler)
+  }
+
+  componentWillUnmount(){
+    document.removeEventListener('click', this.docClickHandler)
   }
 
   showModal({id}){
@@ -77,15 +102,18 @@ class ModalPlaceHolder extends Component {
     if(this.mountedModalsId.includes(id)) return;
 
     this.mountedModalsId.push(id)
+    const newModalConfig = {
+      ...modalConfig,
+      Modal: modals[targetModal],
+      show: false,
+      fadeEffect: false,
+      ref: null,
+      refHandler: (ref) => newModalConfig.ref = ref,
+      showModalHandler: this.showModal({id}),
+      closeModalHandler: this.closeModal({id}),
+    }
     this.setState({
-      MountedModals: [...MountedModals, {
-        ...modalConfig,
-        Modal: modals[targetModal],
-        show: false,
-        fadeEffect: false,
-        showModalHandler: this.showModal({id}),
-        closeModalHandler: this.closeModal({id}),
-      }]
+      MountedModals: [...MountedModals, newModalConfig]
     })
   }
 
@@ -102,13 +130,14 @@ class ModalPlaceHolder extends Component {
   render(){
     const {MountedModals} = this.state;
     const {modals} = this.props;
-    return MountedModals.map(({id, backDrop, show, fadeEffect, closeModalHandler, showModalHandler, Modal}) => (
+    return MountedModals.map(({id, backDrop, refHandler, show, fadeEffect, closeModalHandler, showModalHandler, Modal}) => (
       <Fragment key={id}>
         <Modal
           modal={modals.data[id]}
           modalShow={show}
           modalFadeIn={fadeEffect}
           modalClose={closeModalHandler}
+          modalRefHandler={refHandler}
           showModalHandler={showModalHandler} />
         {backDrop && <BackDrop show={show} />}
       </Fragment>
