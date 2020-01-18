@@ -144,6 +144,9 @@ module.exports = (env) => {
             ]
         },
         entry: {
+            vendor: [
+                'bootstrap/dist/css/bootstrap.css'
+            ],
             main: [
                 ...(PROD_MODE ? [] : ['react-hot-loader/patch']),
                 indexJs
