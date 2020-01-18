@@ -5,7 +5,6 @@
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --env.NODE_ENV development",
-    "server-start": "json-server --host 0.0.0.0 --watch server/db.json --routes server/routes.json --static ./dist",
     "build": "webpack --env.NODE_ENV production",
     "bundle-report": "webpack-bundle-analyzer --port 4200 dist/stats.json",
     "storybook": "start-storybook -p 9009 --ci",
