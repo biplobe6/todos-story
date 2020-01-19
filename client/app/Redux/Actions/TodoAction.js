@@ -16,7 +16,7 @@ export const ActionGetTodos = () => (dispatch) => {
     console.error(error)
   }
 
-  ApiHelper.todo.get().then(onSuccess).catch(onError)
+  ApiHelper.todos.get().then(onSuccess).catch(onError)
 }
 
 export const ActionAddTodo = (data) => (dispatch) => {
@@ -34,9 +34,30 @@ export const ActionAddTodo = (data) => (dispatch) => {
     data.onError(error)
   }
 
-  ApiHelper.todo.post(
+  ApiHelper.todos.post(
     data.getPayload()
   ).then(onSuccess).catch(onError)
+}
+
+
+export const AcitonDeleteTodo = (data) => (dispatch) => {
+  const onSuccess = (response) => {
+    dispatch({
+      type: ActionList.deleteTodo,
+      payload: {
+        data,
+        response
+      }
+    })
+  }
+
+  const onError = (error) => {
+    console.error(error)
+  }
+
+  ApiHelper.todo.delete({
+    todoId: data.id
+  }).then(onSuccess).catch(onError)
 }
 
 

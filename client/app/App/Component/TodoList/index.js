@@ -24,7 +24,7 @@ class TodoList extends Component {
 };
 
 
-const mapStateToProps = ({todo}) => ({todos: todo})
+const mapStateToProps = ({todo}) => ({todos: todo.list})
 const mapDispatchToProps = {
   getTodos: ActionGetTodos,
 }
