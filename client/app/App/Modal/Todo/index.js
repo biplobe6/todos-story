@@ -34,6 +34,7 @@ class ModalTodo extends Component {
   }
 
   submitHandler(event){
+    event.preventDefault()
     const {modalClose} = this.props;
     this.props.addTodo({
       getPayload: () => this.state.form,
@@ -74,7 +75,7 @@ class ModalTodo extends Component {
             </button>
           </div>
           <div className="modal-body">
-            <form>
+            <form onSubmit={this.submitHandler}>
               <div className="form-group">
                 <label htmlFor="todo-title">Title</label>
                 <input
