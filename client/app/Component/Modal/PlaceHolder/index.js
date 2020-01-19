@@ -37,9 +37,9 @@ class ModalPlaceHolder extends Component {
 
     if(!lastModalConfig.show || !lastModalConfig.fadeEffect) return;
 
-    const isInside = lastModalConfig.ref.contains(event.target)
+    // const isInside = lastModalConfig.ref.contains(event.target)
     const isModalContainer = (event.target == lastModalConfig.ref)
-    if(isInside && !isModalContainer) return;
+    if(!isModalContainer) return;
 
     lastModalConfig.closeModalHandler()
   }

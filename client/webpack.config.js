@@ -145,7 +145,8 @@ module.exports = (env) => {
         },
         entry: {
             vendor: [
-                'bootstrap/dist/css/bootstrap.css'
+                'bootstrap/dist/css/bootstrap.css',
+                'font-awesome/css/font-awesome.min.css',
             ],
             main: [
                 ...(PROD_MODE ? [] : ['react-hot-loader/patch']),
