@@ -20,7 +20,7 @@ const HelpText = ({id, error, name, helpText}) => (
       {helpText}
     </small>
   )
-)
+) || null
 
 HelpText.propTypes = {
   error: PropTypes.any,

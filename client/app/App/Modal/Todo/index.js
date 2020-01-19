@@ -6,6 +6,9 @@ import _get from 'lodash/get';
 import modalConnector from '../Connector';
 import { ActionAddTodo } from 'Redux/Actions/TodoAction';
 
+import InputField from 'Component/Input/InputField';
+import TextField from 'Component/Input/TextField';
+
 class ModalTodo extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +22,7 @@ class ModalTodo extends Component {
       error: false,
       form: {
         title: '',
+        story: '',
       }
     }
   }
@@ -76,35 +80,26 @@ class ModalTodo extends Component {
           </div>
           <div className="modal-body">
             <form onSubmit={this.submitHandler}>
-              <div className="form-group">
-                <label htmlFor="todo-title">Title</label>
-                <input
-                  name="title"
-                  type="text"
-                  className="form-control"
-                  id="todo-title"
-                  aria-describedby="title-help"
-                  placeholder="Enter Title"
-                  title="Todo title/header"
-                  value={form.title}
-                  onChange={this.changeHandler} />
-                {error && error.title ? (
-                  error.title.map((errorMsg) => (
-                    <small
-                      id="title-help"
-                      key={errorMsg}
-                      className="form-text text-danger">
-                      {errorMsg}
-                    </small>
-                  ))
-                ) : (
-                  <small
-                    id="title-help"
-                    className="form-text text-muted">
-                    Todo title/header
-                  </small>
-                )}
-              </div>
+              <InputField
+                type='text'
+                name='title'
+                label='Title'
+                error={error}
+                id='todo-title'
+                value={form.title}
+                placeholder='Todo title'
+                title='Todo title/header'
+                onChange={this.changeHandler} />
+              <TextField
+                error={error}
+                id="todo-story"
+                label="Story"
+                name="story"
+                placeholder="Todo story"
+                title="Todo Story"
+                value={form.story}
+                onChange={this.changeHandler}
+                helpText="Story of this todo." />
             </form>
           </div>
           <div className="modal-footer">
