@@ -2,23 +2,29 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ActionGetTodos } from 'Redux/Actions/TodoAction';
 
+import Todo from 'App/Component/Todo';
+
 class TodoList extends Component {
   componentDidMount(){
     this.props.getTodos()
   }
 
   render(){
-    const {todo} = this.props;
-    return todo.map(({id, title}) => (
-      <div key={id}>
-        {title}
+    const {todos} = this.props;
+    return (
+      <div id="todo-list-container">
+        {todos.map((todo) => (
+          <Todo
+            key={todo.id}
+            todo={todo} />
+        ))}
       </div>
-    ))
+    )
   }
 };
 
 
-const mapStateToProps = ({todo}) => ({todo})
+const mapStateToProps = ({todo}) => ({todos: todo})
 const mapDispatchToProps = {
   getTodos: ActionGetTodos,
 }
