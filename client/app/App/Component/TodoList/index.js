@@ -1,33 +1,23 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { ActionGetTodos } from 'Redux/Actions/TodoAction';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import Todo from 'App/Component/Todo';
 
-class TodoList extends Component {
-  componentDidMount(){
-    this.props.getTodos()
-  }
 
-  render(){
-    const {todos} = this.props;
-    return (
-      <div id="todo-list-container">
-        {todos.map((todo) => (
-          <Todo
-            key={todo.id}
-            todo={todo} />
-        ))}
-      </div>
-    )
-  }
+const TodoList = ({todoList, project}) => {
+  return (
+    todoList.map(todo => (
+      <Todo
+        key={todo.id}
+        todo={todo}
+        project={project} />
+    ))
+  );
 };
 
+TodoList.propTypes = {
 
-const mapStateToProps = ({todo}) => ({todos: todo.list})
-const mapDispatchToProps = {
-  getTodos: ActionGetTodos,
-}
-export default connect(mapStateToProps, mapDispatchToProps)(
-  TodoList
-);
+};
+
+export default TodoList;
+

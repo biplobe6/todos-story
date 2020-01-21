@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { AcitonDeleteTodo } from 'Redux/Actions/TodoAction';
 import { connect } from 'react-redux';
+
+import { AcitonDeleteTodo } from 'Redux/Actions/TodoAction';
 import DetailsView from './DetailsView';
 import EditView from './EditView';
+import TodoList from '../TodoList';
 
 class Todo extends Component {
   constructor(props) {
@@ -38,53 +40,62 @@ class Todo extends Component {
   }
 
   render() {
-    const {todo} = this.props;
-    const {title, id} = todo;
+    const {todo, project} = this.props;
+    const {title, id, subTask} = todo;
     const {editView, detailsView, subMenuExpended} = this.state;
     return (
-      <div className="todo-short-info">
-        <div className="left menu-container">
-          <span className="menu">
-            <i className={`fa fa-angle-double-${subMenuExpended ? 'down' : 'right'}`} />
-          </span>
-          <span className="menu checkbox"><input type="checkbox" /></span>
-        </div>
-        <div className="todo-info">
-          {(
-            editView && (
-              <EditView />
-            )
-          ) || (
-            detailsView && (
-              <DetailsView
-                todo={todo}
-                toggleHandler={this.toggleDetailsViewHandler} />
-            )
-          ) || (
-            <div
-              title="Click for todo details"
-              onClick={this.toggleDetailsViewHandler}
-              className="short-view title">
-              <span>[#{id}] </span><span>{title}</span>
-            </div>
-          )}
-        </div>
-        <div className="right menu-container">
-          <span title="Add Subtask" className="menu"><i className="fa fa-plus" /></span>
-          <span onClick={this.clickHandlerEdit} className="menu">
+      <Fragment>
+        <div className="todo-short-info">
+          <div className="left menu-container">
+            <span className="menu">
+              <i className={`fa fa-angle-double-${subMenuExpended ? 'down' : 'right'}`} />
+            </span>
+            <span className="menu checkbox"><input type="checkbox" /></span>
+          </div>
+          <div className="todo-info">
             {(
-              editView && <i title="Close" className="fa fa-window-close" />
+              editView && (
+                <EditView />
+              )
             ) || (
-              <i title="Edit" className="fa fa-edit" />
+              detailsView && (
+                <DetailsView
+                  todo={todo}
+                  toggleHandler={this.toggleDetailsViewHandler} />
+              )
+            ) || (
+              <div
+                title="Click for todo details"
+                onClick={this.toggleDetailsViewHandler}
+                className="short-view title">
+                <span>[#{id}] </span><span>{title}</span>
+              </div>
             )}
-          </span>
-          <span
-            title="Delete"
-            onClick={this.deleteTodo}
-            className="menu"><i className="fa fa-trash" /></span>
-          <span title="Move" className="menu move"><i className="fa fa-arrows" /></span>
+          </div>
+          <div className="right menu-container">
+            <span title="Add Subtask" className="menu"><i className="fa fa-plus" /></span>
+            <span onClick={this.clickHandlerEdit} className="menu">
+              {(
+                editView && <i title="Close" className="fa fa-window-close" />
+              ) || (
+                <i title="Edit" className="fa fa-edit" />
+              )}
+            </span>
+            <span
+              title="Delete"
+              onClick={this.deleteTodo}
+              className="menu"><i className="fa fa-trash" /></span>
+            <span title="Move" className="menu move"><i className="fa fa-arrows" /></span>
+          </div>
         </div>
-      </div>
+        {subTask && subTask.length > 0 && (
+          <div className="todo-list">
+            <TodoList
+              project={project}
+              todoList={subTask} />
+          </div>
+        )}
+      </Fragment>
     );
   }
 }

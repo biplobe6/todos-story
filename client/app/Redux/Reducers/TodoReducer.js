@@ -6,22 +6,6 @@ const initState = {
   idList: [],
 }
 
-const reducerGetTodos = (state, action) => {
-  const {data} = action.payload;
-  const newState = {
-    list: [...data],
-    hash: {},
-    idList: [],
-  }
-
-  newState.list.forEach(todo => {
-    newState.hash[todo.id] = todo;
-    newState.idList.push(todo.id);
-  })
-
-  return newState
-}
-
 
 const reducerAddTodo = (state, action) => {
   const {data} = action.payload;
@@ -56,8 +40,6 @@ const reducerDeleteTodo = (state, action) => {
 
 export const TodoReducer = (state=initState, action) => {
   switch (action.type) {
-    case ActionList.getTodos:
-      return reducerGetTodos(state, action);
 
     case ActionList.addTodo:
       return reducerAddTodo(state, action);

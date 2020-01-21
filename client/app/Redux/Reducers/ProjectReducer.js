@@ -14,9 +14,10 @@ const reducerGetProjectList = (state, action) => {
     idList: [],
   }
 
-  newState.list.forEach(todo => {
-    newState.hash[todo.id] = todo;
-    newState.idList.push(todo.id);
+  newState.list.forEach(project => {
+    project.todoList = [];
+    newState.hash[project.id] = project;
+    newState.idList.push(project.id);
   })
 
   return newState
@@ -71,6 +72,44 @@ const reducerUpdateProject = (state, action) => {
 }
 
 
+const reducerGetTodos = (state, action) => {
+  const {id: projectId} = action.payload.project;
+  const projectIndex = state.idList.indexOf(projectId);
+  const project = state.list[projectIndex];
+  const {data: todoList} = action.payload;
+
+  const newTodoList = []
+  const todosHash = {}
+
+  project.todoList = newTodoList;
+
+  todoList.forEach(todo => {
+    todosHash[todo.id] = todo;
+    if(!todo.subTask){
+      todo.subTask = []
+    }
+    if(!todo.parent){
+      newTodoList.push(todo)
+    } else {
+      let parentTodo = todosHash[todo.parent];
+      if(!parentTodo){
+        parentTodo = {
+          id: todo.parent,
+          subTask: [],
+        }
+      }
+      parentTodo.subTask.push(todo);
+    }
+  })
+
+  return ({
+    ...state,
+    todosHash,
+    list: [...state.list],
+  })
+}
+
+
 export const ProjectReducer = (state=initState, action) => {
   switch (action.type) {
     case ActionList.getProjectList:
@@ -84,6 +123,9 @@ export const ProjectReducer = (state=initState, action) => {
 
     case ActionList.deleteProject:
       return reducerDeleteProject(state, action);
+
+    case ActionList.getTodos:
+      return reducerGetTodos(state, action);
 
     default:
       return state

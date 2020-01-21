@@ -2,12 +2,13 @@ import ApiHelper from "App/Utils/ApiHelper"
 import { ActionList } from "Redux/ActionList"
 
 
-export const ActionGetTodos = () => (dispatch) => {
+export const ActionGetTodos = (project) => (dispatch) => {
   const onSuccess = (response) => {
     dispatch({
       type: ActionList.getTodos,
       payload: {
-        data: response.getData()
+        project,
+        data: response.getData(),
       }
     })
   }
@@ -16,7 +17,9 @@ export const ActionGetTodos = () => (dispatch) => {
     console.error(error)
   }
 
-  ApiHelper.todos.get().then(onSuccess).catch(onError)
+  ApiHelper.todos.get({
+    project: project.id,
+  }).then(onSuccess).catch(onError)
 }
 
 export const ActionAddTodo = (data) => (dispatch) => {

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import EditView from './EditView';
+import TodoList from '../TodoList';
 
 class Project extends Component {
   constructor(props) {
@@ -11,16 +13,22 @@ class Project extends Component {
     this.deleteHandler = this.deleteHandler.bind(this);
 
     this.state = {
-      todoHidden: true,
+      showTodoList: false,
       editView: false,
       projectAddView: false,
     }
   }
 
   toggleView(event){
-    this.setState(({todoHidden}) => ({
-      todoHidden: !todoHidden,
-    }))
+    const {showTodoList} = this.state;
+    const {getTodos, project} = this.props;
+
+    if(!showTodoList){
+      getTodos(project)
+    }
+    this.setState({
+      showTodoList: !showTodoList
+    })
   }
 
   toggleEditView(event){
@@ -35,14 +43,14 @@ class Project extends Component {
   }
 
   render() {
-    const {todoHidden, editView, projectAddView} = this.state;
+    const {showTodoList, editView, projectAddView} = this.state;
     const {project} = this.props;
-    const {title, id} = project;
+    const {title, id, todoList} = project;
     return (
       <div className="project-view">
         <div className="left menu-container">
           <span className="menu">
-            <i className={`fa fa-angle-double-${todoHidden ? 'right' : 'down'}`}></i>
+            <i className={`fa fa-angle-double-${showTodoList ? 'down' : 'right'}`}></i>
           </span>
         </div>
         <div className="short-info">
@@ -54,6 +62,11 @@ class Project extends Component {
             <EditView
               project={project}
               closeEditView={this.toggleEditView} />
+          )}
+          {showTodoList && (
+            <TodoList
+              project={project}
+              todoList={todoList} />
           )}
         </div>
         <div className="right menu-container">

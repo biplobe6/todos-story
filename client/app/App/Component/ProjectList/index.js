@@ -10,18 +10,18 @@ import Project from 'App/Component/Project';
 
 class ProjectList extends Component {
   componentDidMount(){
-    this.props.getTodos()
     this.props.getProjectList()
   }
 
   render(){
-    const {projectList, deleteProject} = this.props;
+    const {projectList, deleteProject, getTodos} = this.props;
     return (
       <div id="todo-list-container">
         {projectList.map((project) => (
           <Project
             key={project.id}
             project={project}
+            getTodos={getTodos}
             deleteProject={deleteProject} />
         ))}
       </div>
