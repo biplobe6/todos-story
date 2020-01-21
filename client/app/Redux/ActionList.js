@@ -1,4 +1,5 @@
 export const ActionList = {
+  addProject: 'ADD-PROJECT',
   turnOnModal: 'MODAL-TURN-ON',
   getTodos: 'GET-TODO-LIST',
   addTodo: 'ADD-TODO',

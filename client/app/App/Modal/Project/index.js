@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 import _get from 'lodash/get';
 
 import modalConnector from '../Connector';
-import { ActionAddTodo } from 'Redux/Actions/TodoAction';
+import { ActionAddProject } from 'Redux/Actions/ProjectAction';
 
 import InputField from 'Component/Input/InputField';
 import TextField from 'Component/Input/TextField';
 
-class ModalTodo extends Component {
+class ModalProject extends Component {
   constructor(props) {
     super(props);
 
@@ -22,7 +22,8 @@ class ModalTodo extends Component {
       error: false,
       form: {
         title: '',
-        story: '',
+        description: '',
+        assets_dir: '',
       }
     }
   }
@@ -40,7 +41,7 @@ class ModalTodo extends Component {
   submitHandler(event){
     event.preventDefault()
     const {modalClose} = this.props;
-    this.props.addTodo({
+    this.props.addProject({
       getPayload: () => this.state.form,
       onSuccess: (response) => {
         this.setState({
@@ -68,11 +69,10 @@ class ModalTodo extends Component {
       <div className="modal-dialog" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title" id="exampleModalLabel">Add Todo</h5>
+            <h5 className="modal-title">Add Project</h5>
             <button
               type="button"
               className="close"
-              data-dismiss="modal"
               onClick={modalClose}
               aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -85,21 +85,33 @@ class ModalTodo extends Component {
                 name='title'
                 label='Title'
                 error={error}
-                id='todo-title'
+                id='project-title'
                 value={form.title}
-                placeholder='Todo title'
-                title='Todo title/header'
+                placeholder='Project title'
+                title='Todo Name'
+                helpText='Project name/title'
                 onChange={this.changeHandler} />
               <TextField
                 error={error}
-                id="todo-story"
-                label="Story"
-                name="story"
-                placeholder="Todo story"
-                title="Todo Story"
-                value={form.story}
+                id="project-story"
+                label="Description"
+                name="description"
+                placeholder="Project description"
+                title="Project Description"
+                value={form.description}
                 onChange={this.changeHandler}
-                helpText="Story of this todo." />
+                helpText="A little description about this project." />
+              <InputField
+                type='text'
+                name='assets_dir'
+                label='Assets Directory'
+                error={error}
+                id='project-assets'
+                value={form.assets_dir}
+                placeholder='Assets Directory'
+                title='Assets Directory'
+                helpText='Path of a directory for assets'
+                onChange={this.changeHandler} />
             </form>
           </div>
           <div className="modal-footer">
@@ -112,25 +124,21 @@ class ModalTodo extends Component {
               type="button"
               className={`btn ${error ? 'btn-danger' : 'btn-primary'}`}
               onClick={this.submitHandler}>
-              {loading ? (
+              {(loading && (
                 <span>
                   <span
                     role="status"
                     aria-hidden="true"
                     className="spinner-border spinner-border-sm" /> Saving...
                 </span>
-              ) : (
-                done ? (
-                  <span>
-                    <i className="fa fa-check" aria-hidden="true" /> Done
-                  </span>
-                ) : (
-                  error ? (
-                    <span>Try again</span>
-                  ) : (
-                    <span>Save changes</span>
-                  )
-                )
+              )) || (done && (
+                <span>
+                  <i className="fa fa-check" aria-hidden="true" /> Done
+                </span>
+              )) || (error && (
+                <span>Try again</span>
+              )) || (
+                <span>Save changes</span>
               )}
             </button>
           </div>
@@ -140,13 +148,13 @@ class ModalTodo extends Component {
   }
 };
 
-ModalTodo.propTypes = {
+ModalProject.propTypes = {
 
 };
 
 const mapDispatchToProps = {
-  addTodo: ActionAddTodo,
+  addProject: ActionAddProject,
 }
-export default modalConnector({id: 'todo'})(
-  connect(null, mapDispatchToProps)(ModalTodo)
+export default modalConnector({id: 'project'})(
+  connect(null, mapDispatchToProps)(ModalProject)
 );

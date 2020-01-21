@@ -3,18 +3,18 @@ import PropTypes from 'prop-types';
 
 
 import "Styles/app.scss"
-import AddTodoButton from 'App/Component/AddTodoButton';
+import ButtonAddProject from 'App/Component/ButtonAddProject';
 import TodoList from 'App/Component/TodoList';
 import ModalPlaceHolder from 'Component/Modal/PlaceHolder';
 
-import './Modal/Todo';
+import './Modal/Project';
 
 
 const App = props => {
   return (
     <Fragment>
       <TodoList />
-      <AddTodoButton />
+      <ButtonAddProject />
       <ModalPlaceHolder />
     </Fragment>
   );

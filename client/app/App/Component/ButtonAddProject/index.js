@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 
 import { ActionModalTurnOn } from 'Redux/Actions/ModalAction';
 
-const AddTodoButton = ({turnOnModal}) => {
+const ButtonAddProject = ({turnOnModal}) => {
   return (
     <button
-      title="Add Todo"
-      id="add-todo-button"
-      data-target-modal="todo"
+      title="Add Project"
+      id="add-project-button"
+      data-target-modal="project"
       data-back-drop="true"
       onClick={turnOnModal}>
       <div className="content">+</div>
@@ -17,7 +17,7 @@ const AddTodoButton = ({turnOnModal}) => {
   );
 };
 
-AddTodoButton.propTypes = {
+ButtonAddProject.propTypes = {
 };
 
 
@@ -25,5 +25,5 @@ const mapDispatchToProps = {
   turnOnModal: ActionModalTurnOn,
 }
 export default connect(null, mapDispatchToProps)(
-  AddTodoButton
+  ButtonAddProject
 );
