@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { AcitonDeleteTodo } from 'Redux/Actions/TodoAction';
 import { connect } from 'react-redux';
 import DetailsView from './DetailsView';
+import EditView from './EditView';
 
 class Todo extends Component {
   constructor(props) {
@@ -10,9 +11,11 @@ class Todo extends Component {
 
     this.deleteTodo = this.deleteTodo.bind(this);
     this.toggleDetailsViewHandler = this.toggleDetailsViewHandler.bind(this);
+    this.clickHandlerEdit = this.clickHandlerEdit.bind(this);
 
     this.state = {
-      expended: false,
+      editView: false,
+      detailsView: false,
       subMenuExpended: false,
     }
   }
@@ -23,15 +26,21 @@ class Todo extends Component {
   }
 
   toggleDetailsViewHandler(event){
-    this.setState(({expended}) => ({
-      expended: !expended,
+    this.setState(({detailsView}) => ({
+      detailsView: !detailsView,
+    }))
+  }
+
+  clickHandlerEdit(event){
+    this.setState(({editView}) => ({
+      editView: !editView,
     }))
   }
 
   render() {
     const {todo} = this.props;
-    const {title} = todo;
-    const {expended, subMenuExpended} = this.state;
+    const {title, id} = todo;
+    const {editView, detailsView, subMenuExpended} = this.state;
     return (
       <div className="todo-short-info">
         <div className="left menu-container">
@@ -41,25 +50,39 @@ class Todo extends Component {
           <span className="menu checkbox"><input type="checkbox" /></span>
         </div>
         <div className="todo-info">
-          {(expended && (
-            <DetailsView
-              todo={todo}
-              toggleHandler={this.toggleDetailsViewHandler} />
-          )) || (
+          {(
+            editView && (
+              <EditView />
+            )
+          ) || (
+            detailsView && (
+              <DetailsView
+                todo={todo}
+                toggleHandler={this.toggleDetailsViewHandler} />
+            )
+          ) || (
             <div
+              title="Click for todo details"
               onClick={this.toggleDetailsViewHandler}
-              className="short-view title">{title}</div>
+              className="short-view title">
+              <span>[#{id}] </span><span>{title}</span>
+            </div>
           )}
         </div>
         <div className="right menu-container">
-          <span className="menu"><i className="fa fa-plus" /></span>
-          <span className="menu"><i className="fa fa-edit" /></span>
-          <span
-            className="menu"
-            onClick={this.deleteTodo}>
-            <i className="fa fa-trash" />
+          <span title="Add Subtask" className="menu"><i className="fa fa-plus" /></span>
+          <span onClick={this.clickHandlerEdit} className="menu">
+            {(
+              editView && <i title="Close" className="fa fa-window-close" />
+            ) || (
+              <i title="Edit" className="fa fa-edit" />
+            )}
           </span>
-          <span className="menu move"><i className="fa fa-arrows" /></span>
+          <span
+            title="Delete"
+            onClick={this.deleteTodo}
+            className="menu"><i className="fa fa-trash" /></span>
+          <span title="Move" className="menu move"><i className="fa fa-arrows" /></span>
         </div>
       </div>
     );
