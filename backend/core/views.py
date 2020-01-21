@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics
+from django_filters.rest_framework import DjangoFilterBackend
 from core import serializer, models
 
 
@@ -17,6 +18,8 @@ class ProjectDetailsView(generics.RetrieveUpdateDestroyAPIView):
 class TodoListCreateView(generics.ListCreateAPIView):
     serializer_class = serializer.TodoSerializer
     queryset = models.Todo.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('project', 'parent')
 
 
 class TodoDetailsView(generics.RetrieveUpdateDestroyAPIView):
