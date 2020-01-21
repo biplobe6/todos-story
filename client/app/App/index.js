@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import "Styles/app.scss"
 import ButtonAddProject from 'App/Component/ButtonAddProject';
-import TodoList from 'App/Component/TodoList';
+import ProjectList from 'App/Component/ProjectList';
 import ModalPlaceHolder from 'Component/Modal/PlaceHolder';
 
 import './Modal/Project';
@@ -13,7 +13,7 @@ import './Modal/Project';
 const App = props => {
   return (
     <Fragment>
-      <TodoList />
+      <ProjectList />
       <ButtonAddProject />
       <ModalPlaceHolder />
     </Fragment>
