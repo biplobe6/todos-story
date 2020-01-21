@@ -2,10 +2,10 @@ import { registerApi } from "./provider";
 
 export const ApiHelper = {
   todos: registerApi({
-    url: '/todo/'
+    url: '/todo'
   }),
   todo: registerApi({
-    url: ({todoId}) => `/todo/${todoId}/`
+    url: ({todoId}) => `/todo/${todoId}`
   })
 }
 
