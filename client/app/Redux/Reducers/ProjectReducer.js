@@ -54,6 +54,23 @@ const reducerDeleteProject = (state, action) => {
 }
 
 
+const reducerUpdateProject = (state, action) => {
+  const {data} = action.payload;
+  const dataIndex = state.idList.indexOf(data.id)
+
+  state.list[dataIndex] = data;
+
+  return ({
+    ...state,
+    list: [...state.list],
+    hash: {
+      ...state.hash,
+      [data.id]: data,
+    },
+  })
+}
+
+
 export const ProjectReducer = (state=initState, action) => {
   switch (action.type) {
     case ActionList.getProjectList:
@@ -61,6 +78,9 @@ export const ProjectReducer = (state=initState, action) => {
 
     case ActionList.addProject:
       return reducerAddProject(state, action);
+
+    case ActionList.updateProject:
+      return reducerUpdateProject(state, action);
 
     case ActionList.deleteProject:
       return reducerDeleteProject(state, action);

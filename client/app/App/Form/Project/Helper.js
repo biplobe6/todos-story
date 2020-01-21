@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import _get from 'lodash/get';
 
-import { ActionAddProject } from 'Redux/Actions/ProjectAction';
+import { ActionAddProject, ActionUpdateProject } from 'Redux/Actions/ProjectAction';
 import InputField from 'Component/Input/InputField';
 import TextField from 'Component/Input/TextField';
 
@@ -27,6 +27,19 @@ class ProjectFormHelper extends Component {
         description: '',
         assets_dir: '',
       }
+    }
+  }
+
+  componentDidMount(){
+    const {project} = this.props;
+    if(project){
+      this.setState({
+        form: {
+          title: project.title,
+          description: project.description,
+          assets_dir: project.assets_dir,
+        }
+      })
     }
   }
 
@@ -96,10 +109,19 @@ class ProjectFormHelper extends Component {
 
   submitHandler(event){
     event.preventDefault();
-    const {onSuccess, onError} = this.props;
+    const {
+      onSuccess,
+      onError,
+      addProject,
+      updateProject,
+      project
+    } = this.props;
 
-    this.props.addProject({
+    const projectAction = project ? updateProject : addProject;
+
+    projectAction({
       getPayload: () => this.state.form,
+      oldPayload: () => project,
       onSuccess: (response) => {
         this.setState({
           loading: false,
@@ -147,6 +169,7 @@ ProjectFormHelper.propTypes = {
 
 const mapDispatchToProps = {
   addProject: ActionAddProject,
+  updateProject: ActionUpdateProject,
 }
 export default connect(null, mapDispatchToProps)(
   ProjectFormHelper

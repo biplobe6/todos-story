@@ -52,6 +52,32 @@ export const ActionAddProject = (data) => (dispatch) => {
 }
 
 
+
+
+
+export const ActionUpdateProject = (data) => (dispatch) => {
+  const onSuccess = (response) => {
+    data.onSuccess(response)
+    dispatch({
+      type: ActionList.updateProject,
+      payload: {
+        data: response.getData(),
+        oldData: data.oldPayload(),
+      }
+    })
+  }
+  const onError = (error) => {
+    console.error(error)
+    data.onError(error)
+  }
+
+  ApiHelper.project.put(
+    data.getPayload(),
+    {projectId: data.oldPayload().id},
+  ).then(onSuccess).catch(onError)
+}
+
+
 export const ActionDeleteProject = (data) => (dispatch) => {
   const onSuccess = (response) => {
     dispatch({

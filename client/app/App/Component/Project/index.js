@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import EditView from './EditView';
 
 class Project extends Component {
   constructor(props) {
@@ -45,13 +46,14 @@ class Project extends Component {
           </span>
         </div>
         <div className="short-info">
-          {(editView && (
-            <div>Edit View</div>
-          )) || (
-            <div className="title" onClick={this.toggleView}>
-              <span>[#{id}] </span>
-              <span>{title}</span>
-            </div>
+          <div className="title" onClick={this.toggleView}>
+            <span>[#{id}] </span>
+            <span>{title}</span>
+          </div>
+          {editView && (
+            <EditView
+              project={project}
+              closeEditView={this.toggleEditView} />
           )}
         </div>
         <div className="right menu-container">
