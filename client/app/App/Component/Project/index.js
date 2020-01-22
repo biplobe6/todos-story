@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import EditView from './EditView';
 import TodoList from '../TodoList';
+import TodoAddView from '../Todo/AddView';
 
 class Project extends Component {
   constructor(props) {
@@ -11,12 +12,26 @@ class Project extends Component {
     this.toggleView = this.toggleView.bind(this);
     this.toggleEditView = this.toggleEditView.bind(this);
     this.deleteHandler = this.deleteHandler.bind(this);
+    this.showTodoAddView = this.showTodoAddView.bind(this);
+    this.hideTodoAddView = this.hideTodoAddView.bind(this);
 
     this.state = {
       showTodoList: false,
       editView: false,
-      projectAddView: false,
+      todoAddView: false,
     }
+  }
+
+  showTodoAddView(event){
+    this.setState({
+      todoAddView: true,
+    })
+  }
+
+  hideTodoAddView(event){
+    this.setState({
+      todoAddView: false,
+    })
   }
 
   toggleView(event){
@@ -43,7 +58,7 @@ class Project extends Component {
   }
 
   render() {
-    const {showTodoList, editView, projectAddView} = this.state;
+    const {showTodoList, editView, todoAddView} = this.state;
     const {project} = this.props;
     const {title, id, todoList} = project;
     return (
@@ -68,9 +83,20 @@ class Project extends Component {
               project={project}
               todoList={todoList} />
           )}
+
+          {todoAddView && (
+            <TodoAddView
+              project={project}
+              closeView={this.hideTodoAddView} />
+          )}
         </div>
         <div className="right menu-container">
-          <span title="Add Todo" className="menu"><i className="fa fa-plus"></i></span>
+          <span
+            className="menu"
+            title="Add Todo"
+            onClick={this.showTodoAddView}>
+            <i className="fa fa-plus"></i>
+          </span>
           <span className="menu" onClick={this.toggleEditView}>
             {(editView && (
               <i title="Close" className="fa fa-window-close"></i>

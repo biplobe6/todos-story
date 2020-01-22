@@ -1,0 +1,33 @@
+#todo-list-container{
+  > .project-view{
+    > .short-info{
+      > .add-todo{
+        padding-left: 50px;
+        position: relative;
+
+        > input {
+          border: none;
+          background: transparent;
+          width: 100%;
+        }
+
+        > .menu-container{
+          position: absolute;
+          top: 2px;
+
+          > .menu {
+            cursor: pointer;
+          }
+
+          &.left{
+            left: 0px;
+
+            > .menu {
+              padding-left: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

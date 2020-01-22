@@ -4,6 +4,7 @@ const initState = {
   list: [],
   hash: {},
   idList: [],
+  todosHash: {},
 }
 
 const reducerGetProjectList = (state, action) => {
@@ -12,6 +13,7 @@ const reducerGetProjectList = (state, action) => {
     list: [...data],
     hash: {},
     idList: [],
+    todosHash: {},
   }
 
   newState.list.forEach(project => {
@@ -26,7 +28,9 @@ const reducerGetProjectList = (state, action) => {
 
 const reducerAddProject = (state, action) => {
   const {data} = action.payload;
+  data.todoList = []
   return ({
+    ...state,
     list: [...state.list, data],
     hash: {
       ...state.hash,
@@ -46,6 +50,7 @@ const reducerDeleteProject = (state, action) => {
   delete state.hash[id];
 
   return ({
+    ...state,
     list: [...state.list],
     idList: [...state.idList],
     hash: {
@@ -57,6 +62,7 @@ const reducerDeleteProject = (state, action) => {
 
 const reducerUpdateProject = (state, action) => {
   const {data} = action.payload;
+  data.todoList = [];
   const dataIndex = state.idList.indexOf(data.id)
 
   state.list[dataIndex] = data;
@@ -72,10 +78,41 @@ const reducerUpdateProject = (state, action) => {
 }
 
 
+const updateTodoList = ({todoList, todosHash, todo}) => {
+  const hashedTodo = todosHash[todo.id]
+  if(hashedTodo){
+    Object.assign(todo, hashedTodo)
+  }
+  todosHash[todo.id] = todo;
+
+  if(!todo.subTask){
+    todo.subTask = []
+  }
+
+  if(!todo.parent){
+    todoList.push(todo)
+  } else {
+    let parentTodo = todosHash[todo.parent];
+    if(!parentTodo){
+      parentTodo = {
+        subTask: [],
+      }
+      todosHash[todo.parent] = parentTodo;
+    }
+    parentTodo.subTask.push(todo);
+  }
+}
+
+
+
+const findProjectById = (id, state) => {
+  const projectIndex = state.idList.indexOf(id);
+  return state.list[projectIndex];
+}
+
 const reducerGetTodos = (state, action) => {
   const {id: projectId} = action.payload.project;
-  const projectIndex = state.idList.indexOf(projectId);
-  const project = state.list[projectIndex];
+  const project = findProjectById(projectId, state)
   const {data: todoList} = action.payload;
 
   const newTodoList = []
@@ -84,27 +121,68 @@ const reducerGetTodos = (state, action) => {
   project.todoList = newTodoList;
 
   todoList.forEach(todo => {
-    todosHash[todo.id] = todo;
-    if(!todo.subTask){
-      todo.subTask = []
-    }
-    if(!todo.parent){
-      newTodoList.push(todo)
-    } else {
-      let parentTodo = todosHash[todo.parent];
-      if(!parentTodo){
-        parentTodo = {
-          id: todo.parent,
-          subTask: [],
-        }
-      }
-      parentTodo.subTask.push(todo);
-    }
+    updateTodoList({
+      todo,
+      todosHash,
+      todoList: newTodoList,
+    })
   })
 
   return ({
     ...state,
     todosHash,
+    list: [...state.list],
+  })
+}
+
+
+const reducerAddTodo = (state, action) => {
+  const {data: addedTodo} = action.payload;
+  const {project: projectId} = addedTodo;
+  const project = findProjectById(projectId, state)
+
+  if(!project.todoList){
+    project.todoList = []
+  }
+
+  updateTodoList({
+    todo: addedTodo,
+    todoList: project.todoList,
+    todosHash: state.todosHash,
+  })
+
+  return ({
+    ...state,
+    list: [...state.list],
+  })
+}
+
+
+
+const reducerDeleteTodo = (state, action) => {
+  const {data} = action.payload;
+  const deletedTodo = state.todosHash[data.id]
+  const {project: projectId} = deletedTodo;
+  const project = findProjectById(projectId, state)
+  let targetIndex;
+
+  if(!deletedTodo.parent){
+    targetIndex = project.todoList.findIndex(todo => (
+      todo.id == deletedTodo.id
+    ))
+
+    project.todoList.splice(targetIndex, 1)
+  } else {
+    const parentTodo = state.todosHash[deletedTodo.parent]
+    targetIndex = parentTodo.subTask.findIndex(todo => (
+      todo.id == deletedTodo.id
+    ))
+    parentTodo.subTask.splice(targetIndex, 1);
+  }
+  delete state.todosHash[deletedTodo.id]
+
+  return ({
+    ...state,
     list: [...state.list],
   })
 }
@@ -126,6 +204,12 @@ export const ProjectReducer = (state=initState, action) => {
 
     case ActionList.getTodos:
       return reducerGetTodos(state, action);
+
+    case ActionList.addTodo:
+      return reducerAddTodo(state, action);
+
+    case ActionList.deleteTodo:
+      return reducerDeleteTodo(state, action);
 
     default:
       return state

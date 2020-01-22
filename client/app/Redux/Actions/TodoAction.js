@@ -24,7 +24,9 @@ export const ActionGetTodos = (project) => (dispatch) => {
 
 export const ActionAddTodo = (data) => (dispatch) => {
   const onSuccess = (response) => {
-    data.onSuccess(response)
+    if(data.onSuccess){
+      data.onSuccess(response)
+    }
     dispatch({
       type: ActionList.addTodo,
       payload: {
@@ -34,11 +36,13 @@ export const ActionAddTodo = (data) => (dispatch) => {
   }
   const onError = (error) => {
     console.error(error)
-    data.onError(error)
+    if(data.onError){
+      data.onError(error)
+    }
   }
 
   ApiHelper.todos.post(
-    data.getPayload()
+    data.payload
   ).then(onSuccess).catch(onError)
 }
 

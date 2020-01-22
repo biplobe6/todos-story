@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 import Todo from 'App/Component/Todo';
 
@@ -19,5 +20,6 @@ TodoList.propTypes = {
 
 };
 
-export default TodoList;
+const mapStateToProps = ({project}) => ({projects: project.list})
+export default connect(mapStateToProps)(TodoList);
 
