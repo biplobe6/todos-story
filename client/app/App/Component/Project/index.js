@@ -78,16 +78,16 @@ class Project extends Component {
               project={project}
               closeEditView={this.toggleEditView} />
           )}
-          {showTodoList && (
-            <TodoList
-              project={project}
-              todoList={todoList} />
-          )}
 
           {todoAddView && (
             <TodoAddView
               project={project}
               closeView={this.hideTodoAddView} />
+          )}
+          {showTodoList && (
+            <TodoList
+              project={project}
+              todoList={todoList} />
           )}
         </div>
         <div className="right menu-container">

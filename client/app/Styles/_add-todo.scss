@@ -5,8 +5,8 @@
         padding-left: 50px;
         position: relative;
 
-        > input {
-          border: none;
+        > textarea, input {
+          border: 1px solid #ccc;
           background: transparent;
           width: 100%;
         }
