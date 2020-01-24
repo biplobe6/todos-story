@@ -97,6 +97,19 @@ const reducerDeleteTodo = (state, action) => {
 }
 
 
+
+const reducerUpdateTodo = (state, action) => {
+  const {data} = action.payload;
+  const {prm} = state;
+  prm.updateTodo(data);
+
+  return ({
+    ...state,
+    list: [...prm.list],
+  })
+}
+
+
 export const ProjectReducer = (state=initState, action) => {
   switch (action.type) {
     case ActionList.getProjectList:
@@ -119,6 +132,9 @@ export const ProjectReducer = (state=initState, action) => {
 
     case ActionList.deleteTodo:
       return reducerDeleteTodo(state, action);
+
+    case ActionList.updateTodo:
+      return reducerUpdateTodo(state, action);
 
     default:
       return state

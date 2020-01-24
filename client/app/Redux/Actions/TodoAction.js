@@ -47,6 +47,29 @@ export const ActionAddTodo = (data) => (dispatch) => {
 }
 
 
+export const ActionEditTodo = (data) => (dispatch) => {
+  const {payload} = data;
+
+  const onSuccess = response => {
+    dispatch({
+      type: ActionList.updateTodo,
+      payload: {
+        data: response.getData()
+      }
+    })
+    data.onSuccess(response)
+  }
+
+  const onError = (error) => {
+    console.error(error)
+  }
+
+  ApiHelper.todo.put(payload, {
+    todoId: payload.id,
+  }).then(onSuccess).catch(onError)
+}
+
+
 export const AcitonDeleteTodo = (data) => (dispatch) => {
   const onSuccess = (response) => {
     dispatch({

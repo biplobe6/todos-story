@@ -4,6 +4,7 @@
     padding: 2px 10px;
     position: relative;
     background-color: #f4f4f4;
+    border: 1px solid transparent;
 
 
     > .menu-container{
@@ -37,6 +38,8 @@
     }
 
     &:hover{
+      border-color: #ccc;
+
       > .menu-container{
         > .menu{
           opacity: 1;

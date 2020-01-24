@@ -483,6 +483,32 @@ describe("Project Manger", () => {
       expect(addedTodo1.title).toBe('todo 1.1')
     })
 
+    it('Should update todo in proper order', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 1,
+        title: "Project 1"
+      })
+      prm.addTodo({
+        id: 1,
+        project: 1,
+        title: "Todo 1"
+      })
+      prm.addTodo({
+        id: 2,
+        project: 1,
+        title: "Todo 2"
+      })
+
+      prm.updateTodo({
+        id: 1,
+        project: 1,
+        title: "Todo 1.2"
+      })
+
+      expect(prm.list[0].todoList[0].id).toBe(1)
+    })
+
     it('Should update todo (with parent without distroying child)', () => {
       const prm = new ProjectManager()
       prm.addProject({

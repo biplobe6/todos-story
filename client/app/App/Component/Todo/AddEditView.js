@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 
-import { ActionAddTodo } from 'Redux/Actions/TodoAction';
+import { ActionAddTodo, ActionEditTodo } from 'Redux/Actions/TodoAction';
 import HelpText from 'Component/Input/HelpText';
 
 
-class TodoAddView extends Component {
+class TodoAddEditView extends Component {
   constructor(props) {
     super(props);
     this.inputRef = null;
@@ -18,7 +18,7 @@ class TodoAddView extends Component {
     this.focusAtInput = this.focusAtInput.bind(this);
     this.onChangeHandler = this.onChangeHandler.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
-    this.addTodo = this.addTodo.bind(this);
+    this.saveTodo = this.saveTodo.bind(this);
     this.docClickHandler = this.docClickHandler.bind(this);
 
     this.state = {
@@ -48,10 +48,11 @@ class TodoAddView extends Component {
     })
   }
 
-  addTodo(){
-    const {addTodo, project} = this.props;
+  saveTodo(){
+    const {addTodo, editTodo, closeView, project, todo} = this.props;
+    const saveTodo = todo ? editTodo : addTodo;
 
-    const onSuccess = () => {
+    const onSuccess = todo ? closeView : () => {
       this.setState({
         form: {
           title: '',
@@ -66,11 +67,16 @@ class TodoAddView extends Component {
       })
     }
 
-    addTodo({
-      payload: {
-        ...this.state.form,
-        project: project.id,
-      },
+    const payload = {
+      ...this.state.form,
+      project: project.id,
+      ...(todo ? {
+        id: todo.id
+      } : {}),
+    }
+
+    saveTodo({
+      payload,
       onSuccess,
       onError,
     })
@@ -91,7 +97,7 @@ class TodoAddView extends Component {
     }
 
     if(enterKey){
-      return this.addTodo()
+      return this.saveTodo()
     }
   }
 
@@ -103,6 +109,15 @@ class TodoAddView extends Component {
   componentDidMount(){
     this.focusAtInput();
     document.addEventListener('click', this.docClickHandler)
+    const {todo} = this.props;
+    if(!todo) return;
+
+    this.setState({
+      form: {
+        title: todo.title,
+        story: todo.story,
+      }
+    })
   }
 
   componentWillUnmount(){
@@ -111,11 +126,11 @@ class TodoAddView extends Component {
 
 
   render(){
-    const {closeView} = this.props;
+    const {closeView, todo} = this.props;
     const {form, error} = this.state;
     return (
       <div
-        className="add-todo"
+        className={"add-todo" + (todo ? " edit-view" : "")}
         ref={this.containerRefHandler}>
         <div className="menu-container left">
           <span
@@ -127,7 +142,7 @@ class TodoAddView extends Component {
           <span
             title="Save"
             className="menu"
-            onClick={this.addTodo}>
+            onClick={this.saveTodo}>
             <i className="fa fa-check"></i>
           </span>
         </div>
@@ -160,15 +175,16 @@ class TodoAddView extends Component {
   }
 }
 
-TodoAddView.propTypes = {
+TodoAddEditView.propTypes = {
 
 };
 
 
 const mapDispatchToProps = {
   addTodo: ActionAddTodo,
+  editTodo: ActionEditTodo,
 }
 
 export default connect(null, mapDispatchToProps)(
-  TodoAddView
+  TodoAddEditView
 );

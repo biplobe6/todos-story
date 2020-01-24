@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import EditView from './EditView';
 import TodoList from '../TodoList';
-import TodoAddView from '../Todo/AddView';
+import TodoAddEditView from '../Todo/AddEditView';
 
 class Project extends Component {
   constructor(props) {
@@ -53,6 +53,8 @@ class Project extends Component {
   }
 
   deleteHandler(event){
+    const confirmDelete = confirm('Do you want to delete this project?')
+    if(!confirmDelete) return
     const {project, deleteProject} = this.props;
     deleteProject(project)
   }
@@ -60,7 +62,7 @@ class Project extends Component {
   render() {
     const {showTodoList, editView, todoAddView} = this.state;
     const {project} = this.props;
-    const {title, id, todoList} = project;
+    const {title, description, id, todoList} = project;
     return (
       <div className="project-view">
         <div className="left menu-container">
@@ -71,16 +73,15 @@ class Project extends Component {
         <div className="short-info">
           <div className="title" onClick={this.toggleView}>
             <span>[#{id}] </span>
-            <span>{title}</span>
+            <span title={description}>{title}</span>
           </div>
           {editView && (
             <EditView
               project={project}
               closeEditView={this.toggleEditView} />
           )}
-
           {todoAddView && (
-            <TodoAddView
+            <TodoAddEditView
               project={project}
               closeView={this.hideTodoAddView} />
           )}
@@ -91,11 +92,12 @@ class Project extends Component {
           )}
         </div>
         <div className="right menu-container">
-          <span
-            className="menu"
-            title="Add Todo"
-            onClick={this.showTodoAddView}>
-            <i className="fa fa-plus"></i>
+          <span className="menu" onClick={this.showTodoAddView}>
+            {todoAddView && (
+              <i title="Close" className="fa fa-window-close"></i>
+            ) || (
+              <i title="Add Todo" className="fa fa-plus"></i>
+            )}
           </span>
           <span className="menu" onClick={this.toggleEditView}>
             {(editView && (

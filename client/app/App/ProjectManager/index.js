@@ -129,10 +129,36 @@ export class ProjectManager {
   }
 
   updateTodo(todo){
-    const oldTodo = Object.assign({}, this.todosHash[todo.id])
-    const newTodo = Object.assign({}, oldTodo, todo)
-    this.deleteTodo(oldTodo)
-    this.addTodo(newTodo)
+    let todoIndex
+    const oldTodo = Object.assign({}, this.todosHash[todo.id]);
+    const newTodo = Object.assign({}, oldTodo, todo);
+
+    const updatePosition = (
+      oldTodo.parent != newTodo.parent
+    ) || (
+      oldTodo.project != newTodo.project
+    )
+
+    if(updatePosition){
+      this.deleteTodo(oldTodo)
+      this.addTodo(newTodo)
+    } else {
+      if(oldTodo.parent){
+        const parentTodo = this.todosHash[oldTodo.parent]
+        todoIndex = parentTodo.subTask.findIndex(targetTodo => (
+          targetTodo.id == oldTodo.id
+        ))
+        parentTodo.subTask[todoIndex] = newTodo
+      } else {
+        const project = this.projectsHash[oldTodo.project]
+        todoIndex = project.todoList.findIndex(targetTodo => (
+          targetTodo.id == oldTodo.id
+        ))
+        project.todoList[todoIndex] = newTodo
+      }
+      this.todosHash[todo.id] = newTodo
+      this.updateEntry(newTodo);
+    }
   }
 }
 

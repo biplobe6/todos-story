@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { AcitonDeleteTodo } from 'Redux/Actions/TodoAction';
-import DetailsView from './DetailsView';
-import EditView from './EditView';
 import TodoList from '../TodoList';
+import TodoAddEditView from './AddEditView';
 
 class Todo extends Component {
   constructor(props) {
@@ -13,9 +12,10 @@ class Todo extends Component {
 
     this.deleteTodo = this.deleteTodo.bind(this);
     this.toggleDetailsViewHandler = this.toggleDetailsViewHandler.bind(this);
-    this.clickHandlerEdit = this.clickHandlerEdit.bind(this);
+    this.toggleEditView = this.toggleEditView.bind(this);
 
     this.state = {
+      addView: false,
       editView: false,
       detailsView: false,
       subMenuExpended: false,
@@ -23,6 +23,9 @@ class Todo extends Component {
   }
 
   deleteTodo(){
+    const confirmation = confirm("Do you want to delete this?")
+    if(!confirmation) return;
+
     const {deleteTodo, todo} = this.props;
     deleteTodo(todo)
   }
@@ -33,7 +36,7 @@ class Todo extends Component {
     }))
   }
 
-  clickHandlerEdit(event){
+  toggleEditView(event){
     this.setState(({editView}) => ({
       editView: !editView,
     }))
@@ -41,53 +44,54 @@ class Todo extends Component {
 
   render() {
     const {todo, project} = this.props;
-    const {title, id, subTask} = todo;
-    const {editView, detailsView, subMenuExpended} = this.state;
+    const {title, id, story, subTask} = todo;
+    const {addView, editView, detailsView, subMenuExpended} = this.state;
     return (
       <Fragment>
-        <div className="todo-short-info">
-          <div className="left menu-container">
-            <span className="menu">
-              <i className={`fa fa-angle-double-${subMenuExpended ? 'down' : 'right'}`} />
-            </span>
-            <span className="menu checkbox"><input type="checkbox" /></span>
-          </div>
-          <div className="todo-info">
-            {(
-              editView && (
-                <EditView />
-              )
-            ) || (
-              detailsView && (
-                <DetailsView
-                  todo={todo}
-                  toggleHandler={this.toggleDetailsViewHandler} />
-              )
-            ) || (
+        {!editView && (
+          <div className="todo-short-info">
+            <div className="left menu-container">
+              <span className="menu">
+                <i className={`fa fa-angle-double-${subMenuExpended ? 'down' : 'right'}`} />
+              </span>
+              <span className="menu checkbox"><input type="checkbox" /></span>
+            </div>
+            <div className="todo-info">
               <div
-                title="Click for todo details"
-                onClick={this.toggleDetailsViewHandler}
-                className="short-view title">
-                <span>[#{id}] </span><span>{title}</span>
+                title={story}
+                className="short-view title"
+                onDoubleClick={this.toggleEditView}
+                onClick={this.toggleDetailsViewHandler}>
+                <span>[#{id}] </span>
+                <span>{title}</span>
               </div>
-            )}
-          </div>
-          <div className="right menu-container">
-            <span title="Add Subtask" className="menu"><i className="fa fa-plus" /></span>
-            <span onClick={this.clickHandlerEdit} className="menu">
-              {(
-                editView && <i title="Close" className="fa fa-window-close" />
-              ) || (
-                <i title="Edit" className="fa fa-edit" />
+              {detailsView && (
+                <div className="story">{story}</div>
               )}
-            </span>
-            <span
-              title="Delete"
-              onClick={this.deleteTodo}
-              className="menu"><i className="fa fa-trash" /></span>
-            <span title="Move" className="menu move"><i className="fa fa-arrows" /></span>
+            </div>
+            <div className="right menu-container">
+              <span
+                title="Add Subtask"
+                className="menu">
+                <i className="fa fa-plus" />
+              </span>
+              <span onClick={this.toggleEditView} className="menu">
+                <i title="Edit" className="fa fa-edit" />
+              </span>
+              <span
+                title="Delete"
+                onClick={this.deleteTodo}
+                className="menu"><i className="fa fa-trash" /></span>
+              <span title="Move" className="menu move"><i className="fa fa-arrows" /></span>
+            </div>
           </div>
-        </div>
+        )}
+        {editView && (
+          <TodoAddEditView
+            todo={todo}
+            project={project}
+            closeView={this.toggleEditView} />
+        )}
         {subTask && subTask.length > 0 && (
           <div className="todo-list">
             <TodoList
