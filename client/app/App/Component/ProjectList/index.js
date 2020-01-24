@@ -20,6 +20,7 @@ class ProjectList extends Component {
         {projectList.map((project) => (
           <Project
             key={project.id}
+            updatedAt={project.updatedAt}
             project={project}
             getTodos={getTodos}
             deleteProject={deleteProject} />
