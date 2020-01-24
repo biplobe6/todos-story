@@ -13,6 +13,7 @@ class Todo extends Component {
     this.deleteTodo = this.deleteTodo.bind(this);
     this.toggleDetailsViewHandler = this.toggleDetailsViewHandler.bind(this);
     this.toggleEditView = this.toggleEditView.bind(this);
+    this.toggleAddView = this.toggleAddView.bind(this);
 
     this.state = {
       addView: false,
@@ -39,6 +40,12 @@ class Todo extends Component {
   toggleEditView(event){
     this.setState(({editView}) => ({
       editView: !editView,
+    }))
+  }
+
+  toggleAddView(event){
+    this.setState(({addView}) => ({
+      addView: !addView
     }))
   }
 
@@ -69,11 +76,19 @@ class Todo extends Component {
                 <div className="story">{story}</div>
               )}
             </div>
+            {addView && (
+              <TodoAddEditView
+                parent={todo}
+                project={project}
+                closeView={this.toggleAddView} />
+            )}
             <div className="right menu-container">
-              <span
-                title="Add Subtask"
-                className="menu">
-                <i className="fa fa-plus" />
+              <span className="menu" onClick={this.toggleAddView}>
+                {addView && (
+                  <i title="Close" className="fa fa-window-close" />
+                ) || (
+                  <i title="Add Subtask" className="fa fa-plus" />
+                )}
               </span>
               <span onClick={this.toggleEditView} className="menu">
                 <i title="Edit" className="fa fa-edit" />

@@ -49,7 +49,7 @@ class TodoAddEditView extends Component {
   }
 
   saveTodo(){
-    const {addTodo, editTodo, closeView, project, todo} = this.props;
+    const {addTodo, editTodo, closeView, project, todo, parent} = this.props;
     const saveTodo = todo ? editTodo : addTodo;
 
     const onSuccess = todo ? closeView : () => {
@@ -72,6 +72,9 @@ class TodoAddEditView extends Component {
       project: project.id,
       ...(todo ? {
         id: todo.id
+      } : {}),
+      ...(parent ? {
+        parent: parent.id
       } : {}),
     }
 

@@ -28,6 +28,18 @@
           }
         }
       }
+
+      .todo-short-info{
+        > .add-todo{
+          padding-left: 55px;
+
+          > .menu-container{
+            &.left {
+              left: 5px;
+            }
+          }
+        }
+      }
     }
   }
 }
