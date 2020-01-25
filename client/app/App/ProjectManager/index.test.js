@@ -326,20 +326,17 @@ describe("Project Manger", () => {
   })
 
   describe('"addTodo" method', () => {
-    let prm;
-    beforeAll(() => {
-      prm = new ProjectManager()
-      prm.addProject({
-        id: 2,
-        title: 'Hello world'
-      })
-    })
-
     it('Should not be undefined.', () => {
+      const prm = new ProjectManager()
       expect(prm.addTodo).not.toBeUndefined()
     })
 
     it('Should be callable.', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 2,
+        title: 'Hello world'
+      })
       expect(() => {
         prm.addTodo({
           id: 2,
@@ -350,51 +347,104 @@ describe("Project Manger", () => {
     })
 
     it('Should add todo in "todoList".', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 2,
+        title: 'Hello world'
+      })
+      prm.addTodo({
+        id: 2,
+        project: 2,
+        title: "Sample todo",
+      })
       const projectInfo = prm.list[0]
       expect(projectInfo.todoList.length).not.toBe(0)
     })
 
     describe('Todo with parent', () => {
-      let project
-      beforeAll(() => {
+      it('Should not be in "todoList"', () => {
+        const prm = new ProjectManager()
+        prm.addProject({
+          id: 2,
+          title: 'Hello world'
+        })
         prm.addTodo({
           id: 3,
           project: 2,
           title: "Sample todo 2",
           parent: 2,
         })
-        project = prm.list[0]
-      })
-
-      it('Should not be in "todoList"', () => {
+        const project = prm.list[0]
         expect(project.todoList.length).not.toBeGreaterThan(1)
       })
 
       it('Should add todo as subTask', () => {
+        const prm = new ProjectManager()
+        prm.addProject({
+          id: 2,
+          title: 'Hello world'
+        })
+        prm.addTodo({
+          id: 3,
+          project: 2,
+          title: "Sample todo 2",
+          parent: 2,
+        })
+        prm.addTodo({
+          id: 2,
+          project: 2,
+          title: "Sample todo 2",
+        })
+        const project = prm.list[0]
         const firstTodo = project.todoList[0]
         expect(firstTodo.subTask.length).toBeGreaterThan(0)
       })
 
       describe('Todo with child first', () => {
-        beforeAll(() => {
+        it('Should not be in "list"', () => {
+          const prm = new ProjectManager()
+          prm.addProject({
+            id: 2,
+            title: 'Hello world'
+          })
+          prm.addTodo({
+            id: 2,
+            project: 2,
+            title: "Sample todo 2",
+          })
           prm.addTodo({
             id: 9,
             project: 2,
             title: "Sample todo 9",
             parent: 4,
           })
-        })
-
-        it('Should not be in "list"', () => {
+          const project = prm.list[0]
           expect(project.todoList.length).not.toBeGreaterThan(1)
         })
 
         it('Should appear after parent todo is added', () => {
+          const prm = new ProjectManager()
+          prm.addProject({
+            id: 2,
+            title: 'Hello world'
+          })
+          prm.addTodo({
+            id: 2,
+            project: 2,
+            title: "Sample todo 2",
+          })
+          prm.addTodo({
+            id: 9,
+            project: 2,
+            title: "Sample todo 9",
+            parent: 4,
+          })
           prm.addTodo({
             id: 4,
             project: 2,
             title: "Sample todo 4"
           })
+          const project = prm.list[0]
           expect(project.todoList.length).toBe(2)
         })
       })
