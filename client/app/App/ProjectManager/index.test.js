@@ -370,6 +370,136 @@ describe("Project Manger", () => {
       expect(projectInfo.todoList.length).not.toBe(0)
     })
 
+    it('Should add todo in sorted position', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 1,
+        title: "Project 1"
+      })
+      prm.addTodo({
+        id: 1,
+        project: 1,
+        title: "Todo 1",
+        score: 1,
+      })
+      prm.addTodo({
+        id: 2,
+        project: 1,
+        title: "Todo 1",
+        score: 0.75,
+      })
+      prm.addTodo({
+        id: 3,
+        project: 1,
+        title: "Todo 1",
+        score: 3,
+      })
+      prm.addTodo({
+        id: 4,
+        project: 1,
+        title: "Todo 1",
+        score: 4,
+      })
+      prm.addTodo({
+        id: 5,
+        project: 1,
+        title: "Todo 1",
+        score: 0.5,
+      })
+
+
+      const todoList = prm.list[0].todoList
+      expect(todoList.length).toBe(5)
+      expect(todoList[0].id).toBe(5)
+      expect(todoList[1].id).toBe(2)
+      expect(todoList[2].id).toBe(1)
+      expect(todoList[3].id).toBe(3)
+      expect(todoList[4].id).toBe(4)
+    })
+
+
+    it('Should add todo and subTask also should be sorted', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 1,
+        title: "Project 1"
+      })
+
+      prm.addTodo({
+        id: 1,
+        score: 2,
+        project: 1,
+        title: "Todo 1",
+      })
+      prm.addTodo({
+        id: 2,
+        score: 1,
+        project: 1,
+        title: "Todo 2",
+      })
+
+      prm.addTodo({
+        id: 3,
+        score: 3,
+        project: 1,
+        parent: 2,
+        title: "Todo 2.1",
+      })
+
+      prm.addTodo({
+        id: 4,
+        score: 4,
+        project: 1,
+        parent: 2,
+        title: "Todo 2.2",
+      })
+
+      prm.addTodo({
+        id: 5,
+        score: 3.5,
+        project: 1,
+        parent: 2,
+        title: "Todo 2.3",
+      })
+
+      prm.addTodo({
+        id: 6,
+        score: 2.5,
+        project: 1,
+        parent: 2,
+        title: "Todo 2.4",
+      })
+
+      const {todoList} = prm.list[0];
+      expect(todoList.length).toBe(2);
+
+      expect(todoList[0].id).toBe(2)
+      expect(todoList[1].id).toBe(1)
+
+      const {subTask} = todoList[0];
+      expect(subTask.length).toBe(4)
+
+      expect(subTask[0].id).toBe(6)
+      expect(subTask[1].id).toBe(3)
+      expect(subTask[2].id).toBe(5)
+      expect(subTask[3].id).toBe(4)
+
+      prm.updateTodo({
+        id: 3,
+        score: 5,
+        project: 1,
+        parent: 2,
+        title: "Todo 2.1.2",
+      })
+
+      const newSubTask = prm.list[0].todoList[0].subTask;
+      expect(newSubTask.length).toBe(4)
+      expect(newSubTask[0].id).toBe(6)
+      expect(newSubTask[1].id).toBe(5)
+      expect(newSubTask[2].id).toBe(4)
+      expect(newSubTask[3].id).toBe(3)
+    })
+
     describe('Todo with parent', () => {
       it('Should not be in "todoList"', () => {
         const prm = new ProjectManager()
