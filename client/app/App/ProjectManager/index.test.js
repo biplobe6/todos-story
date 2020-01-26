@@ -65,6 +65,7 @@ describe("Project Manger", () => {
           id: 1,
           project: 1,
           title: "todo 1",
+          score: 10,
         }
         prm.addProject(project)
         prm.addTodo(todo)
@@ -92,6 +93,7 @@ describe("Project Manger", () => {
           id: 1,
           project: 1,
           title: "parent parent todo",
+          score: 10,
         }
         prm.addTodo(parentParentTodo)
 
@@ -100,6 +102,7 @@ describe("Project Manger", () => {
           project: 1,
           parent: 1,
           title: "parent todo",
+          score: 10,
         }
         prm.addTodo(parentTodo)
 
@@ -108,6 +111,7 @@ describe("Project Manger", () => {
           project: 1,
           parent: 2,
           title: "child todo",
+          score: 10,
         }
         prm.addTodo(todo)
 
@@ -143,6 +147,7 @@ describe("Project Manger", () => {
           title: "todo 3",
           parent: 2,
           project: project.id,
+          score: 10,
         }
         prm.addTodo(todo)
 
@@ -151,6 +156,7 @@ describe("Project Manger", () => {
           title: "parent todo",
           parent: 1,
           project: project.id,
+          score: 10,
         }
         prm.addTodo(parentTodo)
 
@@ -158,6 +164,7 @@ describe("Project Manger", () => {
           id: 1,
           title: "parent parent todo",
           project: project.id,
+          score: 10,
         }
         prm.addTodo(parentParentTodo)
 
@@ -342,6 +349,7 @@ describe("Project Manger", () => {
           id: 2,
           project: 2,
           title: "Sample todo",
+          score: 1
         })
       }).not.toThrow()
     })
@@ -356,6 +364,7 @@ describe("Project Manger", () => {
         id: 2,
         project: 2,
         title: "Sample todo",
+        score: 1,
       })
       const projectInfo = prm.list[0]
       expect(projectInfo.todoList.length).not.toBe(0)
@@ -373,6 +382,7 @@ describe("Project Manger", () => {
           project: 2,
           title: "Sample todo 2",
           parent: 2,
+          score: 1
         })
         const project = prm.list[0]
         expect(project.todoList.length).not.toBeGreaterThan(1)
@@ -389,11 +399,13 @@ describe("Project Manger", () => {
           project: 2,
           title: "Sample todo 2",
           parent: 2,
+          score: 1
         })
         prm.addTodo({
           id: 2,
           project: 2,
           title: "Sample todo 2",
+          score: 1
         })
         const project = prm.list[0]
         const firstTodo = project.todoList[0]
@@ -411,12 +423,14 @@ describe("Project Manger", () => {
             id: 2,
             project: 2,
             title: "Sample todo 2",
+            score: 1,
           })
           prm.addTodo({
             id: 9,
             project: 2,
             title: "Sample todo 9",
             parent: 4,
+            score: 1,
           })
           const project = prm.list[0]
           expect(project.todoList.length).not.toBeGreaterThan(1)
@@ -432,17 +446,20 @@ describe("Project Manger", () => {
             id: 2,
             project: 2,
             title: "Sample todo 2",
+            score: 1,
           })
           prm.addTodo({
             id: 9,
             project: 2,
             title: "Sample todo 9",
             parent: 4,
+            score: 1,
           })
           prm.addTodo({
             id: 4,
             project: 2,
-            title: "Sample todo 4"
+            title: "Sample todo 4",
+            score: 2,
           })
           const project = prm.list[0]
           expect(project.todoList.length).toBe(2)
@@ -467,6 +484,7 @@ describe("Project Manger", () => {
       const todo = {
         id: 1,
         project: project.id,
+        score: 1
       }
       prm.addTodo(todo)
       let updatedProject = prm.list[0]
@@ -487,6 +505,7 @@ describe("Project Manger", () => {
       const todo1 = {
         id: 1,
         project: project.id,
+        score: 1,
       }
       prm.addTodo(todo1)
 
@@ -494,6 +513,7 @@ describe("Project Manger", () => {
         id: 2,
         project: project.id,
         parent: todo1.id,
+        score: 2,
       }
       prm.addTodo(todo2)
       const addedTodo1 = prm.list[0].todoList[0]
@@ -520,13 +540,15 @@ describe("Project Manger", () => {
       prm.addTodo({
         id: 1,
         project: 1,
-        title: "todo 1"
+        title: "todo 1",
+        score: 1,
       })
 
       prm.updateTodo({
         id: 1,
         project: 1,
-        title: "todo 1.1"
+        title: "todo 1.1",
+        score: 1,
       })
 
       const addedTodo1 = prm.list[0].todoList[0]
@@ -542,18 +564,21 @@ describe("Project Manger", () => {
       prm.addTodo({
         id: 1,
         project: 1,
-        title: "Todo 1"
+        title: "Todo 1",
+        score: 1
       })
       prm.addTodo({
         id: 2,
         project: 1,
-        title: "Todo 2"
+        title: "Todo 2",
+        score: 2
       })
 
       prm.updateTodo({
         id: 1,
         project: 1,
-        title: "Todo 1.2"
+        title: "Todo 1.2",
+        score: 1
       })
 
       expect(prm.list[0].todoList[0].id).toBe(1)
@@ -567,25 +592,30 @@ describe("Project Manger", () => {
       prm.addTodo({
         id: 1,
         project: 1,
+        score: 1,
       })
       prm.addTodo({
         id: 2,
         project: 1,
+        score: 2,
       })
       prm.addTodo({
         id: 3,
         project: 1,
         parent: 1,
+        score: 1,
       })
       prm.addTodo({
         id: 4,
         project: 1,
         parent: 3,
+        score: 1,
       })
       prm.addTodo({
         id: 5,
         project: 1,
         parent: 3,
+        score: 2,
       })
 
       const addedTodo3 = prm.list[0].todoList[0].subTask[0]
@@ -602,6 +632,7 @@ describe("Project Manger", () => {
         id: 3,
         project: 1,
         parent: 2,
+        score: 1,
       })
       expect(addedTodo1.subTask.length).not.toBeGreaterThan(0)
       expect(addedTodo2.subTask.length).toBeGreaterThan(0)

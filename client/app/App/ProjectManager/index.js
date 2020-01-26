@@ -1,4 +1,4 @@
-
+import { sortByScore } from './score';
 
 
 export class ProjectManager {
@@ -68,9 +68,11 @@ export class ProjectManager {
       }
       if(obj.todoList){
         obj.todoList = [...obj.todoList]
+        sortByScore(obj.todoList)
       }
       if(obj.subTask){
         obj.subTask = [...obj.subTask]
+        sortByScore(obj.subTask)
       }
       Object.assign(obj, newData)
     }
