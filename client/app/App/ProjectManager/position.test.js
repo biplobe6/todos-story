@@ -1,18 +1,18 @@
-import { sortByScore } from './score';
+import { sortByPosition } from './position';
 const {expect} = global;
 
 
-describe('"sortByScore" method', () => {
+describe('"sortByPosition" method', () => {
   it('Should not be undefined', () => {
-    expect(sortByScore).not.toBeUndefined()
+    expect(sortByPosition).not.toBeUndefined()
   })
 
 
   it('Should be callable', () => {
     expect(() => {
-      sortByScore([{
+      sortByPosition([{
         id: 1,
-        score: 1
+        position: 1
       }])
     }).not.toThrow()
   })
@@ -21,22 +21,22 @@ describe('"sortByScore" method', () => {
   it('Should be sorted', () => {
     const dataList = [{
       id: 1,
-      score: 1,
+      position: 1,
     }, {
       id: 3,
-      score: 3,
+      position: 3,
     }, {
       id: 4,
-      score: 4,
+      position: 4,
     }, {
       id: 2,
-      score: 2,
+      position: 2,
     }, {
       id: 5,
-      score: 5,
+      position: 5,
     }]
 
-    sortByScore(dataList)
+    sortByPosition(dataList)
     expect(dataList.length).toBe(5)
     expect(dataList[0].id).toBe(1)
     expect(dataList[1].id).toBe(2)
@@ -49,22 +49,22 @@ describe('"sortByScore" method', () => {
   it('Should be sorted with fraction', () => {
     const dataList = [{
       id: 1,
-      score: 0.7,
+      position: 0.7,
     }, {
       id: 3,
-      score: 0.9,
+      position: 0.9,
     }, {
       id: 4,
-      score: 1.2,
+      position: 1.2,
     }, {
       id: 2,
-      score: 0.8,
+      position: 0.8,
     }, {
       id: 5,
-      score: 1.5,
+      position: 1.5,
     }]
 
-    sortByScore(dataList)
+    sortByPosition(dataList)
     expect(dataList.length).toBe(5)
     expect(dataList[0].id).toBe(1)
     expect(dataList[1].id).toBe(2)

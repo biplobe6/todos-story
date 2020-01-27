@@ -6,14 +6,14 @@ const swap = (items=[], firstIndex, secondIndex) => {
 
 
 const partition = (items=[], left, right) => {
-  const pivot = items[Math.floor((right + left) / 2)].score
+  const pivot = items[Math.floor((right + left) / 2)].position
   let i = left, j = right;
 
   while( i <= j){
-    while(items[i].score < pivot){
+    while(items[i].position < pivot){
       i++;
     }
-    while(items[j].score > pivot){
+    while(items[j].position > pivot){
       j--;
     }
 
@@ -46,10 +46,10 @@ const quickSort = (items=[], left, right) => {
 }
 
 
-export const sortByScore = (dataList=[]) => {
+export const sortByPosition = (dataList=[]) => {
   if(dataList.length > 1){
     quickSort(dataList, 0, (dataList.length - 1))
   }
 }
 
-export default sortByScore
+export default sortByPosition

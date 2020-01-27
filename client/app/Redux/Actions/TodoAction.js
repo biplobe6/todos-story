@@ -1,5 +1,29 @@
 import ApiHelper from "App/Utils/ApiHelper"
 import { ActionList } from "Redux/ActionList"
+import store from 'Root/store';
+
+
+
+const getPosition = ({project, parent}) => {
+  const state = store.getState()['project']
+  const {prm} = state;
+
+
+  const todoList = typeof parent == 'number' ? (
+    prm.getTodo({id: parent}).subTask
+  ) : (
+    prm.getProject({id: project}).todoList
+  )
+
+  let position = 1;
+  todoList.forEach(todo => {
+    if(todo.position >= position){
+      position = (todo.position + 1)
+    }
+  });
+
+  return position
+}
 
 
 export const ActionGetTodos = (project) => (dispatch) => {
@@ -23,6 +47,10 @@ export const ActionGetTodos = (project) => (dispatch) => {
 }
 
 export const ActionAddTodo = (data) => (dispatch) => {
+  const payload = {
+    ...data.payload,
+    position: getPosition(data.payload)
+  }
   const onSuccess = (response) => {
     if(data.onSuccess){
       data.onSuccess(response)
@@ -42,7 +70,7 @@ export const ActionAddTodo = (data) => (dispatch) => {
   }
 
   ApiHelper.todos.post(
-    data.payload
+    payload
   ).then(onSuccess).catch(onError)
 }
 
@@ -64,7 +92,7 @@ export const ActionEditTodo = (data) => (dispatch) => {
     console.error(error)
   }
 
-  ApiHelper.todo.put(payload, {
+  ApiHelper.todo.patch(payload, {
     todoId: payload.id,
   }).then(onSuccess).catch(onError)
 }

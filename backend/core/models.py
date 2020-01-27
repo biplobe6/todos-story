@@ -22,7 +22,7 @@ class Todo(Meta):
     title = models.TextField()
     story = models.TextField(default="", blank=True)
     done = models.BooleanField(default=False, blank=True)
-    position = models.IntegerField(null=True, blank=True)
+    position = models.FloatField()
     parent = models.ForeignKey(
         'self',
         null=True,
