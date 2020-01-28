@@ -4,6 +4,7 @@ import ProjectManager from "App/ProjectManager";
 const initState = {
   prm: new ProjectManager(),
   list: [],
+  draggingTodo: null,
 }
 
 const reducerGetProjectList = (state, action) => {
@@ -110,6 +111,14 @@ const reducerUpdateTodo = (state, action) => {
 }
 
 
+const reducerDraggingTodo = (state, action) => {
+  return ({
+    ...state,
+    draggingTodo: action.payload.data
+  })
+}
+
+
 export const ProjectReducer = (state=initState, action) => {
   switch (action.type) {
     case ActionList.getProjectList:
@@ -135,6 +144,9 @@ export const ProjectReducer = (state=initState, action) => {
 
     case ActionList.updateTodo:
       return reducerUpdateTodo(state, action);
+
+    case ActionList.draggingTodo:
+      return reducerDraggingTodo(state, action);
 
     default:
       return state

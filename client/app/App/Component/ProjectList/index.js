@@ -4,6 +4,7 @@ import { ActionGetTodos } from 'Redux/Actions/TodoAction';
 import {
   ActionGetProjectList,
   ActionDeleteProject,
+  ActionOnDragTodo,
 } from 'Redux/Actions/ProjectAction';
 
 import Project from 'App/Component/Project';
@@ -14,7 +15,7 @@ class ProjectList extends Component {
   }
 
   render(){
-    const {projectList, deleteProject, getTodos} = this.props;
+    const {projectList} = this.props;
     return (
       <div id="todo-list-container">
         {projectList.map((project) => (
@@ -22,8 +23,10 @@ class ProjectList extends Component {
             key={project.id}
             updatedAt={project.updatedAt}
             project={project}
-            getTodos={getTodos}
-            deleteProject={deleteProject} />
+            getTodos={this.props.getTodos}
+            draggingTodo={this.props.draggingTodo}
+            deleteProject={this.props.deleteProject}
+            updateDraggingTodo={this.props.updateDraggingTodo} />
         ))}
       </div>
     )
@@ -31,11 +34,15 @@ class ProjectList extends Component {
 };
 
 
-const mapStateToProps = ({project}) => ({projectList: project.list})
+const mapStateToProps = ({project}) => ({
+  projectList: project.list,
+  draggingTodo: project.draggingTodo,
+})
 const mapDispatchToProps = {
   getTodos: ActionGetTodos,
   getProjectList: ActionGetProjectList,
   deleteProject: ActionDeleteProject,
+  updateDraggingTodo: ActionOnDragTodo,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
   ProjectList

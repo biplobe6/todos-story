@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import EditView from './EditView';
 import TodoList from '../TodoList';
 import TodoAddEditView from '../Todo/AddEditView';
+import DragNDrop from 'Component/DragNDrop';
 
 class Project extends Component {
   constructor(props) {
@@ -14,12 +15,17 @@ class Project extends Component {
     this.deleteHandler = this.deleteHandler.bind(this);
     this.showTodoAddView = this.showTodoAddView.bind(this);
     this.hideTodoAddView = this.hideTodoAddView.bind(this);
+    this.onDropHandler = this.onDropHandler.bind(this);
 
     this.state = {
       showTodoList: false,
       editView: false,
       todoAddView: false,
     }
+  }
+
+  onDropHandler(event){
+    console.log('dropped in project');
   }
 
   showTodoAddView(event){
@@ -64,33 +70,47 @@ class Project extends Component {
     const {project} = this.props;
     const {title, description, id, todoList} = project;
     return (
-      <div className="project-view">
+      <div
+        className="project-view">
         <div className="left menu-container">
           <span className="menu">
             <i className={`fa fa-angle-double-${showTodoList ? 'down' : 'right'}`}></i>
           </span>
         </div>
-        <div className="short-info">
-          <div className="title" onClick={this.toggleView}>
-            <span>[#{id}] </span>
-            <span title={description}>{title}</span>
-          </div>
-          {editView && (
-            <EditView
-              project={project}
-              closeEditView={this.toggleEditView} />
+        <DragNDrop
+          onDrop={this.onDropHandler}>
+          {(drag) => (
+            <div className="short-info">
+              <div
+                className="title"
+                onClick={this.toggleView}
+                {...drag.dropZoneHandlers}>
+                <span>[#{id}] </span>
+                <span title={description}>{title}</span>
+              </div>
+              {editView && (
+                <EditView
+                  project={project}
+                  closeEditView={this.toggleEditView} />
+              )}
+              {todoAddView && (
+                <TodoAddEditView
+                  project={project}
+                  closeView={this.hideTodoAddView} />
+              )}
+              {drag.dropZoneEnabled && (
+                <div className="drop-zone" />
+              )}
+              {showTodoList && (
+                <TodoList
+                  project={project}
+                  todoList={todoList}
+                  draggingTodo={this.props.draggingTodo}
+                  updateDraggingTodo={this.props.updateDraggingTodo} />
+              )}
+            </div>
           )}
-          {todoAddView && (
-            <TodoAddEditView
-              project={project}
-              closeView={this.hideTodoAddView} />
-          )}
-          {showTodoList && (
-            <TodoList
-              project={project}
-              todoList={todoList} />
-          )}
-        </div>
+        </DragNDrop>
         <div className="right menu-container">
           <span className="menu" onClick={this.showTodoAddView}>
             {todoAddView && (
