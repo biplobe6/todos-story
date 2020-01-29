@@ -148,6 +148,9 @@ export const ProjectReducer = (state=initState, action) => {
     case ActionList.draggingTodo:
       return reducerDraggingTodo(state, action);
 
+    case ActionList.moveTodo:
+      return reducerUpdateTodo(state, action);
+
     default:
       return state
   }

@@ -97,13 +97,3 @@ export const ActionDeleteProject = (data) => (dispatch) => {
   }).then(onSuccess).catch(onError)
 }
 
-
-
-export const ActionOnDragTodo = (data) => (dispatch) => {
-  dispatch({
-    type: ActionList.draggingTodo,
-    payload: {
-      data,
-    }
-  })
-}

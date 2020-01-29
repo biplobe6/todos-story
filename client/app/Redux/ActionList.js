@@ -9,4 +9,5 @@ export const ActionList = {
   updateTodo: 'UPDATE-TODO',
   deleteTodo: 'DELETE-TODO',
   draggingTodo: 'DRAGGING-TODO',
+  moveTodo: 'MOVE-TODO',
 }

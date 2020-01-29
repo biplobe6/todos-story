@@ -2,10 +2,16 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
+
+import {
+  AcitonDeleteTodo,
+  ActionOnDragTodo,
+  ActionOnDropTodo
+} from 'Redux/Actions/TodoAction';
 import TodoList from '../TodoList';
 import TodoAddEditView from './AddEditView';
-import { AcitonDeleteTodo } from 'Redux/Actions/TodoAction';
 import DragNDrop from 'Component/DragNDrop';
+import TodoDropZone from './DropZone';
 
 class Todo extends Component {
   constructor(props) {
@@ -18,7 +24,8 @@ class Todo extends Component {
 
     this.onDragStartHandler = this.onDragStartHandler.bind(this);
     this.onDragEndHandler = this.onDragEndHandler.bind(this);
-    this.onDropHandler = this.onDropHandler.bind(this);
+    this.onDropUp = this.onDropUp.bind(this);
+    this.onDropDown = this.onDropDown.bind(this);
 
     this.state = {
       addView: false,
@@ -36,10 +43,21 @@ class Todo extends Component {
     this.props.updateDraggingTodo(null)
   }
 
-  onDropHandler(event){
-    console.log('dropped in todo')
+  onDropUp(e){
+    this.props.onDropTodo({
+      todoToMove: this.props.draggingTodo,
+      referenceTodo: this.props.todo,
+      direction: 'up',
+    })
   }
 
+  onDropDown(e){
+    this.props.onDropTodo({
+      todoToMove: this.props.draggingTodo,
+      referenceTodo: this.props.todo,
+      direction: 'down',
+    })
+  }
 
   deleteTodo(){
     const confirmation = confirm("Do you want to delete this?")
@@ -68,16 +86,19 @@ class Todo extends Component {
   }
 
   render() {
-    const {todo, project, draggingTodo, updateDraggingTodo} = this.props;
+    const {todo, project} = this.props;
     const {title, id, story, subTask} = todo;
     const {addView, editView, detailsView, subMenuExpended} = this.state;
     return (
       <DragNDrop
         onDragStart={this.onDragStartHandler}
-        onDragEnd={this.onDragEndHandler}
-        onDrop={this.onDropHandler}>
+        onDragEnd={this.onDragEndHandler}>
         {(drag) => (
           <Fragment>
+            <TodoDropZone
+              {...drag.dropZoneHandlers}
+              onDropHandler={this.onDropUp}
+              enable={drag.dropZoneEnabled} />
             {!editView && (
               <div
                 draggable
@@ -138,14 +159,13 @@ class Todo extends Component {
               <div className="todo-list">
                 <TodoList
                   project={project}
-                  todoList={subTask}
-                  draggingTodo={draggingTodo}
-                  updateDraggingTodo={updateDraggingTodo} />
+                  todoList={subTask} />
               </div>
             )}
-            {drag.dropZoneEnabled && (
-              <div className="drop-zone" />
-            )}
+            <TodoDropZone
+              {...drag.dropZoneHandlers}
+              onDropHandler={this.onDropDown}
+              enable={drag.dropZoneEnabled} />
           </Fragment>
         )}
       </DragNDrop>
@@ -160,9 +180,14 @@ Todo.propTypes = {
 };
 
 
+const mapStateToProps = ({project}) => ({
+  draggingTodo: project.draggingTodo,
+})
 const mapDispatchToProps = {
   deleteTodo: AcitonDeleteTodo,
+  updateDraggingTodo: ActionOnDragTodo,
+  onDropTodo: ActionOnDropTodo,
 }
-export default connect(null, mapDispatchToProps)(
+export default connect(mapStateToProps, mapDispatchToProps)(
   Todo
 );

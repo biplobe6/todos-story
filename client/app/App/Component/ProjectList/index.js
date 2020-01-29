@@ -24,9 +24,7 @@ class ProjectList extends Component {
             updatedAt={project.updatedAt}
             project={project}
             getTodos={this.props.getTodos}
-            draggingTodo={this.props.draggingTodo}
-            deleteProject={this.props.deleteProject}
-            updateDraggingTodo={this.props.updateDraggingTodo} />
+            deleteProject={this.props.deleteProject} />
         ))}
       </div>
     )
@@ -36,13 +34,11 @@ class ProjectList extends Component {
 
 const mapStateToProps = ({project}) => ({
   projectList: project.list,
-  draggingTodo: project.draggingTodo,
 })
 const mapDispatchToProps = {
   getTodos: ActionGetTodos,
   getProjectList: ActionGetProjectList,
   deleteProject: ActionDeleteProject,
-  updateDraggingTodo: ActionOnDragTodo,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
   ProjectList
