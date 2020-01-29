@@ -81,7 +81,7 @@ class DragNDrop extends Component {
       this.setState(({dropZoneEnabled}) => {
         if(!dropZoneEnabled) return;
 
-        this.props.onDragLeave(event);
+        this.props.onDragLeave();
         return ({
           dropZoneEnabled: false
         })
