@@ -9,15 +9,15 @@ class DragNDrop extends Component {
   constructor(props) {
     super(props);
 
-    this.dragOverCount = 0;
-    this.onDragEnterId = null;
-
     this.onDragStartHandler = this.onDragStartHandler.bind(this);
     this.onDragOverHandler = this.onDragOverHandler.bind(this);
     this.onDragEnterHandler = this.onDragEnterHandler.bind(this);
     this.onDragLeaveHandler = this.onDragLeaveHandler.bind(this);
     this.onDragEndHandler = this.onDragEndHandler.bind(this);
     this.onDropHandler = this.onDropHandler.bind(this);
+
+    this.dragOverCount = 0;
+    this.onDragEnterId = null;
 
     this.dropZoneHandlers = {
       onDragOver: this.onDragOverHandler,
@@ -44,48 +44,35 @@ class DragNDrop extends Component {
     this.props.onDragOver(event);
   }
 
-  onDragEnterHandler(event){
+  onDragEnterHandler(){
     if(this.state.dragging) return;
 
     if(this.dragOverCount == 0){
-      this.setState(({dropZoneEnabled}) => {
-        if(dropZoneEnabled) return;
-
-        if(this.onDragEnterId != null){
-          clearTimeout(this.onDragEnterId);
-          this.onDragEnterId = null;
-        }
-
-        this.onDragEnterId = setTimeout(() => {
-          this.setState(() => ({
-            dropZoneEnabled: true,
-          }), () => {
-            this.props.onDragEnter();
-            this.onDragEnterId = null;
-          })
-        }, this.props.delay)
-      })
+      this.onDragEnterId = setTimeout(() => {
+        this.setState({
+          dropZoneEnabled: true,
+        })
+        this.props.onDragEnter();
+        this.onDragEnterId = null;
+      }, this.props.delay)
     }
     this.dragOverCount++;
   }
 
-  onDragLeaveHandler(event){
+  onDragLeaveHandler(){
     if(this.state.dragging) return;
     this.dragOverCount--
 
     if(this.dragOverCount == 0){
       if(this.onDragEnterId != null){
-        clearTimeout(this.onDragEnterId);
+        clearTimeout(this.onDragEnterId)
         this.onDragEnterId = null;
-      }
-      this.setState(({dropZoneEnabled}) => {
-        if(!dropZoneEnabled) return;
-
-        this.props.onDragLeave();
-        return ({
-          dropZoneEnabled: false
+      } else {
+        this.setState({
+          dropZoneEnabled: false,
         })
-      })
+        this.props.onDragLeave();
+      }
     }
   }
 
@@ -93,7 +80,7 @@ class DragNDrop extends Component {
     this.setState({
       dragging: false
     })
-    this.props.onDragEnd(null)
+    this.props.onDragEnd(event)
   }
 
   onDropHandler(event){
@@ -110,12 +97,12 @@ class DragNDrop extends Component {
       dragging,
       dropZoneEnabled,
       dropZoneHandlers: this.dropZoneHandlers,
-      onDragStartHandler: this.onDragStartHandler.bind(this),
-      onDragOverHandler: this.onDragOverHandler.bind(this),
-      onDragEnterHandler: this.onDragEnterHandler.bind(this),
-      onDragLeaveHandler: this.onDragLeaveHandler.bind(this),
-      onDragEndHandler: this.onDragEndHandler.bind(this),
-      onDropHandler: this.onDropHandler.bind(this),
+      onDragStartHandler: this.onDragStartHandler,
+      onDragOverHandler: this.onDragOverHandler,
+      onDragEnterHandler: this.onDragEnterHandler,
+      onDragLeaveHandler: this.onDragLeaveHandler,
+      onDragEndHandler: this.onDragEndHandler,
+      onDropHandler: this.onDropHandler,
     })
   }
 }
