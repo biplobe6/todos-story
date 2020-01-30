@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DropZone from 'Component/DragNDrop/DropZone';
 
 class TodoDropZone extends Component {
   constructor(props) {
@@ -16,11 +15,11 @@ class TodoDropZone extends Component {
 
   render(){
     const {enable, onDropHandler: _, ...props} = this.props;
-    return (
-      <DropZone enable={enable}>
-        <div className="drop-zone" {...props} onDrop={this.onDropHandler} />
-      </DropZone>
-    );
+    return enable ? (
+      <div {...props}
+        className="drop-zone"
+        onDrop={this.onDropHandler} />
+    ) : null;
   }
 }
 

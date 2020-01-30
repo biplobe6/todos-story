@@ -36,9 +36,16 @@ const DragNDropSetup = () => {
 
   const getRenderProps = () => renderProps
 
-  const testHelperOnDragStart = () => {
+  const dragStartFnWithDelay = () => {
     const clock = useFakeTimers()
     getRenderProps().onDragEnterHandler()
+    clock.tick(instance.props.delay)
+    clock.reset()
+  }
+
+  const dragLeaveFnWithDelay = () => {
+    const clock = useFakeTimers()
+    getRenderProps().onDragLeaveHandler()
     clock.tick(instance.props.delay)
     clock.reset()
   }
@@ -49,7 +56,8 @@ const DragNDropSetup = () => {
     getRenderProps,
     onDragEnterFn,
     onDragLeaveFn,
-    testHelperOnDragStart,
+    dragStartFnWithDelay,
+    dragLeaveFnWithDelay,
   })
 }
 
@@ -193,20 +201,38 @@ describe('<DragNDrop />', () => {
       })
 
 
-      it('Should call "onDragEnter" (props callback)', () => {
-        const {onDragEnterFn, testHelperOnDragStart} = DragNDropSetup();
+      it('Should trigger "onDragEnter" with delay', () => {
+        const {dragStartFnWithDelay, onDragEnterFn} = DragNDropSetup();
+
         expect(onDragEnterFn).not.toHaveBeenCalled()
-        testHelperOnDragStart()
-        expect(onDragEnterFn).toHaveBeenCalled()
+        dragStartFnWithDelay()
+        expect(onDragEnterFn).toHaveBeenCalledTimes(1)
+      })
+
+      it('Should not trigger "onDragEnter" if gets canceled before delay', () => {
+        const {getRenderProps, dragLeaveFnWithDelay, instance, onDragEnterFn, onDragLeaveFn} = DragNDropSetup();
+
+        expect(onDragEnterFn).not.toHaveBeenCalled()
+
+        const clock = useFakeTimers()
+        getRenderProps().onDragEnterHandler()
+        clock.tick(instance.props.delay / 2)
+        clock.reset()
+
+        dragLeaveFnWithDelay()
+
+        expect(onDragEnterFn).not.toHaveBeenCalled()
+        expect(instance.onDragEnterId).toBeNull()
+        expect(onDragLeaveFn).not.toHaveBeenCalled()
       })
 
 
       it('Should not call "onDragEnter" more than once (props callback).', () => {
-        const {onDragEnterFn, testHelperOnDragStart} = DragNDropSetup();
+        const {onDragEnterFn, dragStartFnWithDelay} = DragNDropSetup();
         expect(onDragEnterFn).not.toHaveBeenCalled()
-        testHelperOnDragStart()
-        testHelperOnDragStart()
-        testHelperOnDragStart()
+        dragStartFnWithDelay()
+        dragStartFnWithDelay()
+        dragStartFnWithDelay()
         expect(onDragEnterFn).toHaveBeenCalledTimes(1)
       })
 
@@ -237,43 +263,68 @@ describe('<DragNDrop />', () => {
 
 
       it('Should update (state) dropZoneEnabled to false', () => {
-        const { getRenderProps, testHelperOnDragStart } = DragNDropSetup()
+        const { getRenderProps, dragStartFnWithDelay, dragLeaveFnWithDelay } = DragNDropSetup()
         expect(getRenderProps().dropZoneEnabled).toBeFalsy()
 
-        testHelperOnDragStart()
+        dragStartFnWithDelay()
         expect(getRenderProps().dropZoneEnabled).toBeTruthy()
 
-        getRenderProps().onDragLeaveHandler()
+        dragLeaveFnWithDelay()
         expect(getRenderProps().dropZoneEnabled).toBeFalsy()
       })
 
 
-      it('Should call "onDragLeave" (props callback)', () => {
-        const { getRenderProps, onDragLeaveFn, testHelperOnDragStart } = DragNDropSetup()
-
-        testHelperOnDragStart()
+      it('Should trigger "onDragLeave" with delay', () => {
+        const {onDragEnterFn, onDragLeaveFn, dragStartFnWithDelay, dragLeaveFnWithDelay} = DragNDropSetup();
+        expect(onDragEnterFn).not.toHaveBeenCalled()
         expect(onDragLeaveFn).not.toHaveBeenCalled()
+
+        dragStartFnWithDelay()
+        expect(onDragEnterFn).toHaveBeenCalledTimes(1)
+
+        dragLeaveFnWithDelay()
+        expect(onDragLeaveFn).toHaveBeenCalledTimes(1)
+      })
+
+
+      it('Should not trigger "onDragLeave" if gets canceled before delay', () => {
+        const {getRenderProps, instance, dragLeaveFnWithDelay, dragStartFnWithDelay, onDragEnterFn, onDragLeaveFn} = DragNDropSetup();
+        expect(onDragEnterFn).not.toHaveBeenCalled()
+        expect(onDragLeaveFn).not.toHaveBeenCalled()
+
+
+
+        dragStartFnWithDelay()
+        expect(onDragEnterFn).toHaveBeenCalledTimes(1)
+
+        const clock = useFakeTimers()
         getRenderProps().onDragLeaveHandler()
-        expect(onDragLeaveFn).toHaveBeenCalled()
+        clock.tick(instance.props.delay / 2)
+        clock.reset()
+
+        dragStartFnWithDelay()
+
+        expect(instance.onDragLeaveId).toBeNull()
+        expect(onDragLeaveFn).not.toHaveBeenCalled()
       })
 
 
       it('Should not call "onDragLeave" more than once (props callback)', () => {
-        const { getRenderProps, onDragLeaveFn, testHelperOnDragStart } = DragNDropSetup()
+        const { onDragLeaveFn, dragStartFnWithDelay, dragLeaveFnWithDelay } = DragNDropSetup()
 
-        testHelperOnDragStart()
+        dragStartFnWithDelay()
         expect(onDragLeaveFn).not.toHaveBeenCalled()
-        getRenderProps().onDragLeaveHandler()
-        getRenderProps().onDragLeaveHandler()
-        getRenderProps().onDragLeaveHandler()
+        dragLeaveFnWithDelay()
+        dragLeaveFnWithDelay()
+        dragLeaveFnWithDelay()
         expect(onDragLeaveFn).toHaveBeenCalledTimes(1)
       })
 
 
       it('Should not call "onDragLeave" (props callback) if itself is being dragged', () => {
-        const { getRenderProps, onDragLeaveFn, testHelperOnDragStart } = DragNDropSetup()
+        const { getRenderProps, onDragLeaveFn, dragStartFnWithDelay } = DragNDropSetup()
 
-        testHelperOnDragStart()
+        dragStartFnWithDelay()
         getRenderProps().onDragStartHandler()
         getRenderProps().onDragLeaveHandler()
         expect(onDragLeaveFn).not.toHaveBeenCalled()

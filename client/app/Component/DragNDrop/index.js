@@ -18,6 +18,7 @@ class DragNDrop extends Component {
 
     this.dragOverCount = 0;
     this.onDragEnterId = null;
+    this.onDragLeaveId = null;
 
     this.dropZoneHandlers = {
       onDragOver: this.onDragOverHandler,
@@ -48,13 +49,18 @@ class DragNDrop extends Component {
     if(this.state.dragging) return;
 
     if(this.dragOverCount == 0){
-      this.onDragEnterId = setTimeout(() => {
-        this.setState({
-          dropZoneEnabled: true,
-        })
-        this.props.onDragEnter();
-        this.onDragEnterId = null;
-      }, this.props.delay)
+      if(this.onDragLeaveId != null){
+        clearTimeout(this.onDragLeaveId);
+        this.onDragLeaveId = null;
+      } else {
+        this.onDragEnterId = setTimeout(() => {
+          this.setState({
+            dropZoneEnabled: true,
+          })
+          this.props.onDragEnter();
+          this.onDragEnterId = null;
+        }, this.props.delay)
+      }
     }
     this.dragOverCount++;
   }
@@ -68,10 +74,13 @@ class DragNDrop extends Component {
         clearTimeout(this.onDragEnterId)
         this.onDragEnterId = null;
       } else {
-        this.setState({
-          dropZoneEnabled: false,
-        })
-        this.props.onDragLeave();
+        this.onDragLeaveId = setTimeout(() => {
+          this.setState({
+            dropZoneEnabled: false,
+          })
+          this.props.onDragLeave();
+          this.onDragLeaveId = null;
+        }, this.props.delay)
       }
     }
   }
