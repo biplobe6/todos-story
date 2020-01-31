@@ -116,7 +116,7 @@ class Todo extends Component {
                 onDragStart={drag.onDragStartHandler}>
                 <div className="left menu-container">
                   <span className="menu">
-                    <i className={`fa fa-angle-double-${subMenuExpended ? 'down' : 'right'}`} />
+                    <i className={`fa fa-angle-double-${detailsView ? 'down' : 'right'}`} />
                   </span>
                   <span className="menu checkbox">
                     <input
@@ -138,7 +138,11 @@ class Todo extends Component {
                     </span>
                   </div>
                   {detailsView && (
-                    <div className="story">{story}</div>
+                    <div className="story text-muted">
+                      {story.split('\n').map((text) => (
+                        <p className="mb-0" key={text}>{text}</p>
+                      ))}
+                    </div>
                   )}
                 </div>
                 {addView && (
