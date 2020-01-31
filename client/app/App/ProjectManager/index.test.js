@@ -1,4 +1,5 @@
 import ProjectManager from '.';
+const {expect} = global;
 
 
 describe("Project Manger", () => {
@@ -370,6 +371,138 @@ describe("Project Manger", () => {
       expect(projectInfo.todoList.length).not.toBe(0)
     })
 
+    it('Should add progress', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 1,
+        title: "Project 1"
+      })
+      prm.addTodo({
+        id: 1,
+        project: 1,
+        title: 'Todo 1',
+        position: 1
+      })
+      expect(prm.list[0].todoList[0].progress).not.toBeUndefined()
+      expect(prm.list[0].todoList[0].progress).toBe(0)
+
+      prm.addTodo({
+        id: 2,
+        project: 1,
+        title: 'Todo 2',
+        position: 2,
+        done: true
+      })
+      expect(prm.list[0].todoList[1].progress).not.toBeUndefined()
+      expect(prm.list[0].todoList[1].progress).toBe(100)
+    })
+
+    it('Should update progress of parent todo', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 1,
+        title: "Project 1"
+      })
+      prm.addTodo({
+        id: 1,
+        project: 1,
+        title: 'Todo 1',
+        position: 1
+      })
+      prm.addTodo({
+        id: 2,
+        project: 1,
+        title: 'Todo 2',
+        position: 1,
+        parent: 1
+      })
+      prm.addTodo({
+        id: 3,
+        project: 1,
+        title: 'Todo 3',
+        position: 2,
+        parent: 1,
+        done: true,
+      })
+
+      expect(prm.list[0].todoList[0].subTask[0].id).toBe(2)
+      expect(prm.list[0].todoList[0].subTask[0].progress).not.toBeUndefined()
+      expect(prm.list[0].todoList[0].subTask[0].progress).toBe(0)
+
+      expect(prm.list[0].todoList[0].subTask[1].id).toBe(3)
+      expect(prm.list[0].todoList[0].subTask[1].progress).not.toBeUndefined()
+      expect(prm.list[0].todoList[0].subTask[1].progress).toBe(100)
+
+      expect(prm.list[0].todoList[0].id).toBe(1)
+      expect(prm.list[0].todoList[0].progress).not.toBeUndefined()
+      expect(prm.list[0].todoList[0].progress).toBe(50)
+
+      prm.addTodo({
+        id: 4,
+        project: 1,
+        title: 'Todo 4',
+        position: 3,
+        parent: 1,
+      })
+      expect(prm.todosHash[1].progress).toBe(33)
+    })
+
+    it('Should update progress of parent todo (partially)', () => {
+      const prm = new ProjectManager()
+      const project1 = {
+        id: 1,
+        title: 'Project 1',
+      }
+      prm.addProject(project1)
+
+      prm.addTodo({
+        id: 1,
+        project: project1.id,
+        title: 'Todo 1',
+        position: 1
+      })
+
+      prm.addTodo({
+        id: 2,
+        project: project1.id,
+        title: 'Todo 1.1',
+        position: 1,
+        parent: 1,
+        done: true
+      })
+
+      prm.addTodo({
+        id: 3,
+        project: project1.id,
+        title: 'Todo 1.2',
+        position: 2,
+        parent: 1
+      })
+
+      prm.addTodo({
+        id: 4,
+        project: project1.id,
+        title: 'Todo 1.2.1',
+        position: 1,
+        parent: 3,
+        done: true,
+      })
+
+      prm.addTodo({
+        id: 5,
+        project: project1.id,
+        title: 'Todo 1.2.2',
+        position: 2,
+        parent: 3
+      })
+
+      expect(prm.list[0].todoList[0].subTask[1].subTask[1].progress).toBe(0)
+      expect(prm.list[0].todoList[0].subTask[1].subTask[0].progress).toBe(100)
+      expect(prm.list[0].todoList[0].subTask[1].progress).toBe(50)
+      expect(prm.list[0].todoList[0].subTask[0].progress).toBe(100)
+      expect(prm.list[0].todoList[0].progress).toBe(75)
+    })
+
     it('Should add todo in sorted position', () => {
       const prm = new ProjectManager()
       prm.addProject({
@@ -654,6 +787,44 @@ describe("Project Manger", () => {
       const addedProject = prm.list[0]
       expect(addedProject.todoList.length).toBe(1)
     })
+
+    it('Should update progress of parent todo', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 1,
+        title: 'Project 1'
+      })
+      prm.addTodo({
+        id: 1,
+        project: 1,
+        position: 1,
+        title: 'Todo 1'
+      })
+      prm.addTodo({
+        id: 2,
+        project: 1,
+        position: 1,
+        parent: 1,
+        title: 'Todo 1.1',
+      })
+      prm.addTodo({
+        id: 3,
+        project: 1,
+        position: 2,
+        parent: 1,
+        title: 'Todo 1.2',
+        done: true,
+      })
+
+
+      expect(prm.list[0].todoList[0].subTask[0].progress).toBe(0)
+      expect(prm.list[0].todoList[0].subTask[1].progress).toBe(100)
+      expect(prm.list[0].todoList[0].progress).toBe(50)
+
+      prm.deleteTodo({id: 2})
+      expect(prm.list[0].todoList[0].subTask[0].progress).toBe(100)
+      expect(prm.list[0].todoList[0].progress).toBe(100)
+    })
   })
 
   describe('"updateTodo" method', () => {
@@ -770,6 +941,54 @@ describe("Project Manger", () => {
       const updateTodo = prm.list[0].todoList[1].subTask[0]
       expect(updateTodo.parent).toBe(2)
       expect(updateTodo.subTask.length).toBe(2)
+    })
+
+    it('Should update progress', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 1,
+        title: 'Project 1'
+      })
+
+      prm.addTodo({
+        id: 1,
+        project: 1,
+        position: 1,
+        title: 'Todo 1'
+      })
+
+      prm.addTodo({
+        id: 2,
+        project: 1,
+        position: 1,
+        parent: 1,
+        title: 'Todo 1.1',
+        done: true,
+      })
+
+      prm.addTodo({
+        id: 3,
+        project: 1,
+        position: 2,
+        parent: 1,
+        title: 'Todo 1.2',
+      })
+
+      expect(prm.list[0].todoList[0].subTask[0].progress).toBe(100)
+      expect(prm.list[0].todoList[0].subTask[1].progress).toBe(0)
+      expect(prm.list[0].todoList[0].progress).toBe(50)
+
+      prm.updateTodo({
+        id: 3,
+        project: 1,
+        position: 2,
+        parent: 1,
+        title: 'Todo 1.2',
+        done: true,
+      })
+      expect(prm.list[0].todoList[0].subTask[0].progress).toBe(100)
+      expect(prm.list[0].todoList[0].subTask[1].progress).toBe(100)
+      expect(prm.list[0].todoList[0].progress).toBe(100)
     })
   })
 })
