@@ -93,7 +93,7 @@ export const ActionEditTodo = (data) => (dispatch) => {
   }
 
   ApiHelper.todo.patch(payload, {
-    todoId: payload.id,
+    id: payload.id,
   }).then(onSuccess).catch(onError)
 }
 
@@ -114,7 +114,7 @@ export const AcitonDeleteTodo = (data) => (dispatch) => {
   }
 
   ApiHelper.todo.delete({
-    todoId: data.id
+    id: data.id
   }).then(onSuccess).catch(onError)
 }
 
@@ -228,9 +228,27 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
     position: newPosition,
     ...parentReference,
   }, {
-    todoId: todoToMove.id
+    id: todoToMove.id
   }).then(onSuccess).catch(onError)
 
 }
 
+
+export const ActionToggleTodoStatus = (data) => (dispatch) => {
+  const onSuccess = (response) => {
+    dispatch({
+      type: ActionList.updateTodo,
+      payload: {
+        data: response.getData()
+      }
+    })
+  }
+  const onError = (error) => {
+    console.error(error)
+  }
+
+  ApiHelper.todo.patch(
+    data, {id: data.id}
+  ).then(onSuccess).catch(onError)
+}
 

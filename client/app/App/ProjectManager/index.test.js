@@ -214,6 +214,16 @@ describe("Project Manger", () => {
         prm.list[0].todoList
       ).not.toBeUndefined()
     })
+
+    it('Should add progress', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 1,
+        title: 'Project 1'
+      })
+      expect(prm.list[0].id).toBe(1)
+      expect(prm.list[0].progress).not.toBeUndefined()
+    })
   })
 
   describe('"addProjectList" method', () => {
@@ -395,6 +405,31 @@ describe("Project Manger", () => {
       })
       expect(prm.list[0].todoList[1].progress).not.toBeUndefined()
       expect(prm.list[0].todoList[1].progress).toBe(100)
+    })
+
+    it('Should update progress of project.', () => {
+      const prm = new ProjectManager()
+      prm.addProject({
+        id: 1,
+        title: 'Project 1'
+      })
+      prm.addTodo({
+        id: 1,
+        project: 1,
+        position: 1,
+        title: 'Todo 1',
+        done: true
+      })
+      expect(prm.list[0].todoList[0].progress).toBe(100)
+      expect(prm.list[0].progress).toBe(100)
+
+      prm.addTodo({
+        id: 2,
+        project: 1,
+        position: 2,
+        title: 'Todo 2',
+      })
+      expect(prm.list[0].progress).toBe(50)
     })
 
     it('Should update progress of parent todo', () => {

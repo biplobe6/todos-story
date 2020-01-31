@@ -5,13 +5,13 @@ export const ApiHelper = {
     url: '/project'
   }),
   project: registerApi({
-    url: ({projectId}) => `/project/${projectId}`
+    url: ({id}) => `/project/${id}`
   }),
   todos: registerApi({
     url: '/todo'
   }),
   todo: registerApi({
-    url: ({todoId}) => `/todo/${todoId}`
+    url: ({id}) => `/todo/${id}`
   })
 }
 

@@ -27,6 +27,7 @@ export class ProjectManager {
   addProject(projectData){
     const project = Object.assign({}, projectData)
     project.todoList = []
+    project.progress = 0;
     this.projectsHash[project.id] = project;
     this.list.push(project)
     this.updateEntry(project)
@@ -89,7 +90,7 @@ export class ProjectManager {
         const percentage = 100 / todo.subTask.length
         todo.subTask.forEach(subTask => {
           todo.progress += subTask.done ? percentage : (
-            subTask.progress * (subTask.progress / 100)
+            percentage * (subTask.progress / 100)
           )
         })
         todo.progress = Math.round(todo.progress)
@@ -100,6 +101,14 @@ export class ProjectManager {
     if(typeof todo.parent == 'number'){
       const parentTodo = this.todosHash[todo.parent]
       this.updateTodoProgress(parentTodo)
+    } else if(typeof todo.project == 'number'){
+      const project = this.projectsHash[todo.project]
+      const projectPercentage = 100 / project.todoList.length
+      project.progress = 0;
+      project.todoList.forEach(eachProject => {
+        project.progress += projectPercentage * (eachProject.progress / 100)
+      })
+      project.progress = Math.round(project.progress)
     }
   }
 

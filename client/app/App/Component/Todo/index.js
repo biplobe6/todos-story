@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import {
   AcitonDeleteTodo,
   ActionOnDragTodo,
-  ActionOnDropTodo
+  ActionOnDropTodo,
+  ActionToggleTodoStatus
 } from 'Redux/Actions/TodoAction';
 import TodoList from '../TodoList';
 import TodoAddEditView from './AddEditView';
@@ -21,6 +22,7 @@ class Todo extends Component {
     this.toggleDetailsViewHandler = this.toggleDetailsViewHandler.bind(this);
     this.toggleEditView = this.toggleEditView.bind(this);
     this.toggleAddView = this.toggleAddView.bind(this);
+    this.toggleStatus = this.toggleStatus.bind(this);
 
     this.onDragStartHandler = this.onDragStartHandler.bind(this);
     this.onDragEndHandler = this.onDragEndHandler.bind(this);
@@ -85,9 +87,16 @@ class Todo extends Component {
     }))
   }
 
+  toggleStatus(event){
+    this.props.toggleTodoStatus({
+      id: this.props.todo.id,
+      done: event.target.checked,
+    })
+  }
+
   render() {
     const {todo, project} = this.props;
-    const {title, id, story, subTask} = todo;
+    const {title, id, story, subTask, progress, done} = todo;
     const {addView, editView, detailsView, subMenuExpended} = this.state;
     return (
       <DragNDrop
@@ -109,7 +118,12 @@ class Todo extends Component {
                   <span className="menu">
                     <i className={`fa fa-angle-double-${subMenuExpended ? 'down' : 'right'}`} />
                   </span>
-                  <span className="menu checkbox"><input type="checkbox" /></span>
+                  <span className="menu checkbox">
+                    <input
+                      type="checkbox"
+                      checked={done}
+                      onChange={this.toggleStatus} />
+                  </span>
                 </div>
                 <div className="todo-info">
                   <div
@@ -118,8 +132,10 @@ class Todo extends Component {
                     className="short-view title"
                     onDoubleClick={this.toggleEditView}
                     onClick={this.toggleDetailsViewHandler}>
-                    <span>[#{id}] </span>
-                    <span>{title}</span>
+                    <span className="text-muted">[#{id} ({progress}%)] </span>
+                    <span>
+                      {done ? <del>{title}</del> : title}
+                    </span>
                   </div>
                   {detailsView && (
                     <div className="story">{story}</div>
@@ -187,6 +203,7 @@ const mapDispatchToProps = {
   deleteTodo: AcitonDeleteTodo,
   updateDraggingTodo: ActionOnDragTodo,
   onDropTodo: ActionOnDropTodo,
+  toggleTodoStatus: ActionToggleTodoStatus,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
   Todo

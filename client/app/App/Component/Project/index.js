@@ -62,7 +62,7 @@ class Project extends Component {
   render() {
     const {showTodoList, editView, todoAddView} = this.state;
     const {project} = this.props;
-    const {title, description, id, todoList} = project;
+    const {title, description, id, todoList, progress} = project;
     return (
       <div
         className="project-view">
@@ -75,7 +75,7 @@ class Project extends Component {
           <div
             className="title"
             onClick={this.toggleView}>
-            <span>[#{id}] </span>
+            <span className="text-muted">[{`#${id}${progress ? ` (${progress}%)`: ''}`}] </span>
             <span title={description}>{title}</span>
           </div>
           {editView && (

@@ -73,7 +73,7 @@ export const ActionUpdateProject = (data) => (dispatch) => {
 
   ApiHelper.project.put(
     data.getPayload(),
-    {projectId: data.oldPayload().id},
+    {id: data.oldPayload().id},
   ).then(onSuccess).catch(onError)
 }
 
@@ -93,7 +93,7 @@ export const ActionDeleteProject = (data) => (dispatch) => {
     console.error(error)
   }
   ApiHelper.project.delete({
-    projectId: data.id
+    id: data.id
   }).then(onSuccess).catch(onError)
 }
 
