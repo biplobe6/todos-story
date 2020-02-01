@@ -55,6 +55,7 @@ THIRD_PARTY_APPS = [
     'django_extensions',
     'rest_framework',
     'django_filters',
+    'djcelery',
 ]
 
 PROJECT_APPS = [
@@ -97,13 +98,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'main.wsgi.application'
 
 
+BROKER_URL = 'sqla+sqlite:///.celery.sqlite3'
+CELERY_RESULT_BACKEND = 'db+sqlite:///.celery.sqlite3'
+
+
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, '.db.sqlite3'),
     }
 }
 

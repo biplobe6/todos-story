@@ -1,6 +1,7 @@
 backend/env
+backend/venv
 **/__pycache__
-backend/db.sqlite3
+**/.*.sqlite3
 **/.vscode
 
 client/node_modules
