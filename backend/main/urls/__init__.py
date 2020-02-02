@@ -15,9 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
+from django.views import static
 from main import views
+from django.conf import settings
 
-urlpatterns = [
+production_extra_files = [] if settings.DEBUG else [
+    path('static/<str:path>', static.serve, {'document_root': settings.STATIC_ROOT}),
+]
+
+urlpatterns = production_extra_files + [
     path('admin/', admin.site.urls),
     path('api/v1/', include('main.urls.api.v1'), name="api-v1"),
     re_path(r'^favicon\.ico$', views.favicon_view),

@@ -34,9 +34,12 @@ DIST_DIR = os.path.abspath(os.path.join(CLIENT_DIR, 'dist'))
 SECRET_KEY = '9+!6)17*fk_oej7o=svojz*%p%ui*4$kaq^##$l#@e_c@bdac)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+if not DEBUG and os.environ.get('DEBUG', None) == 'TRUE':
+    DEBUG = True
+
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -52,11 +55,16 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'django_extensions',
     'rest_framework',
     'django_filters',
-    'djcelery',
+    'django_celery_beat',
 ]
+
+if DEBUG:
+    THIRD_PARTY_APPS += [
+        'django_extensions',
+    ]
+
 
 PROJECT_APPS = [
     'core',
@@ -97,9 +105,62 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
+CELERY_DB = '{}/.celery.sqlite3'.format(BASE_DIR)
+CELERY_BROKER_URL = 'sqla+sqlite:///' + CELERY_DB
+CELERY_RESULT_BACKEND = 'db+sqlite:///' + CELERY_DB
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-BROKER_URL = 'sqla+sqlite:///.celery.sqlite3'
-CELERY_RESULT_BACKEND = 'db+sqlite:///.celery.sqlite3'
+
+LOGGING = {
+    'version': 1,
+}
+
+if DEBUG:
+    if 'filters' not in LOGGING:
+        LOGGING.update({
+            'filters': {}
+        })
+    if 'formatters' not in LOGGING:
+        LOGGING.update({
+            'formatters': {}
+        })
+    if 'handlers' not in LOGGING:
+        LOGGING.update({
+            'handlers': {}
+        })
+    if 'loggers' not in LOGGING:
+        LOGGING.update({
+            'loggers': {}
+        })
+
+    LOGGING['filters'].update({
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        }
+    })
+
+    LOGGING['formatters'].update({
+        'sqlformatter': {
+            '()': 'dev.logformatter.SqlFormatter',
+            'format': '%(levelname)s %(message)s',
+        },
+    })
+
+    LOGGING['handlers'].update({
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'sqlformatter',
+        }
+    })
+
+    LOGGING['loggers'].update({
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+        },
+    })
 
 
 # Database
@@ -111,6 +172,17 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, '.db.sqlite3'),
     }
 }
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ]
+}
+
+if DEBUG:
+    REST_FRAMEWORK['DEFAULT_RENDERER_CLASSES'].append(
+        'rest_framework.renderers.BrowsableAPIRenderer'
+    )
 
 
 # Password validation
@@ -150,6 +222,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 STATICFILES_DIRS = [
     DIST_DIR,
 ]

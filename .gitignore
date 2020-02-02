@@ -1,5 +1,7 @@
 backend/env
 backend/venv
+**/.ipynb_checkpoints
+**/*.i.ipynb
 **/__pycache__
 **/.*.sqlite3
 **/.vscode
