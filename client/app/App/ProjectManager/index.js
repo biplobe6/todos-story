@@ -86,9 +86,10 @@ export class ProjectManager {
       if(todo.done){
         todo.progress = 100
       } else {
-        todo.progress = 0
-        const percentage = 100 / todo.subTask.length
-        todo.subTask.forEach(subTask => {
+        todo.progress = 0;
+        const todoList = todo.subTask || todo.todoList
+        const percentage = 100 / todoList.length
+        todoList.forEach(subTask => {
           todo.progress += subTask.done ? percentage : (
             percentage * (subTask.progress / 100)
           )
@@ -146,14 +147,7 @@ export class ProjectManager {
   deleteTodo({alias}){
     const todo = this.todosHash[alias]
     let todoIndex;
-    if(!todo.parent){
-      const project = this.getProject({alias: todo.project})
-      todoIndex = project.todoList.findIndex(targetTodo => (
-        targetTodo.alias == todo.alias
-      ))
-      project.todoList.splice(todoIndex, 1)
-      this.updateEntry(project)
-    } else {
+    if(todo.parent) {
       const parentTodo = this.todosHash[todo.parent]
       todoIndex = parentTodo.subTask.findIndex(targetTodo => (
         targetTodo.alias == todo.alias
@@ -161,6 +155,14 @@ export class ProjectManager {
       parentTodo.subTask.splice(todoIndex, 1)
       this.updateTodoProgress(parentTodo)
       this.updateEntry(parentTodo)
+    } else if(todo.project){
+      const project = this.getProject({alias: todo.project})
+      todoIndex = project.todoList.findIndex(targetTodo => (
+        targetTodo.alias == todo.alias
+      ))
+      project.todoList.splice(todoIndex, 1)
+      this.updateTodoProgress(project)
+      this.updateEntry(project)
     }
     delete this.todosHash[todo.alias]
   }
@@ -177,7 +179,7 @@ export class ProjectManager {
     )
 
     if(updatePosition){
-      this.deleteTodo(oldTodo)
+      this.deleteTodo({alias: todo.alias})
       this.addTodo(newTodo)
     } else {
       if(oldTodo.parent){
