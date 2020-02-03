@@ -24,6 +24,7 @@ describe("Project Manger", () => {
     expect(prm.list.length).not.toBeUndefined()
   })
 
+  // ===============================[ updateEntry() ]================================
   describe('"updateEntry" method', () => {
     it('Should not be undefined.', () => {
       const prm = new ProjectManager()
@@ -33,12 +34,12 @@ describe("Project Manger", () => {
     it('Should be callable.', () => {
       const prm = new ProjectManager()
       const project = {
-        id: 2
+        alias: 2
       }
       prm.addProject(project)
       expect(() => {
         prm.updateEntry({
-          id: 2
+          alias: 2
         })
       }).not.toThrow()
     })
@@ -47,7 +48,7 @@ describe("Project Manger", () => {
       it('Should update updatedAt and key.', () => {
         const prm = new ProjectManager()
         const project = {
-          id: 1,
+          alias: 1,
           title: 'project 1',
         }
         prm.addProject(project)
@@ -59,11 +60,11 @@ describe("Project Manger", () => {
       it('Should update todo with project.', () => {
         const prm = new ProjectManager()
         const project = {
-          id: 1,
+          alias: 1,
           title: 'project 1',
         }
         const todo = {
-          id: 1,
+          alias: 1,
           project: 1,
           title: "todo 1",
           position: 10,
@@ -85,13 +86,13 @@ describe("Project Manger", () => {
       it('Should update todo with parent todo and project.', () => {
         const prm = new ProjectManager()
         const project = {
-          id: 1,
+          alias: 1,
           title: 'project 1',
         }
         prm.addProject(project)
 
         const parentParentTodo = {
-          id: 1,
+          alias: 1,
           project: 1,
           title: "parent parent todo",
           position: 10,
@@ -99,7 +100,7 @@ describe("Project Manger", () => {
         prm.addTodo(parentParentTodo)
 
         const parentTodo = {
-          id: 2,
+          alias: 2,
           project: 1,
           parent: 1,
           title: "parent todo",
@@ -108,7 +109,7 @@ describe("Project Manger", () => {
         prm.addTodo(parentTodo)
 
         const todo = {
-          id: 3,
+          alias: 3,
           project: 1,
           parent: 2,
           title: "child todo",
@@ -138,33 +139,33 @@ describe("Project Manger", () => {
       it('Should update todo and should be able to handle random order', () => {
         const prm = new ProjectManager()
         const project = {
-          id: 1,
+          alias: 1,
           title: "project 1",
         }
         prm.addProject(project)
 
         const todo = {
-          id: 3,
+          alias: 3,
           title: "todo 3",
           parent: 2,
-          project: project.id,
+          project: project.alias,
           position: 10,
         }
         prm.addTodo(todo)
 
         const parentTodo = {
-          id: 2,
+          alias: 2,
           title: "parent todo",
           parent: 1,
-          project: project.id,
+          project: project.alias,
           position: 10,
         }
         prm.addTodo(parentTodo)
 
         const parentParentTodo = {
-          id: 1,
+          alias: 1,
           title: "parent parent todo",
-          project: project.id,
+          project: project.alias,
           position: 10,
         }
         prm.addTodo(parentParentTodo)
@@ -190,6 +191,7 @@ describe("Project Manger", () => {
     })
   })
 
+  // ================================[ addProject() ]================================
   describe('"addProject" method', () => {
     const prm = new ProjectManager()
 
@@ -200,7 +202,7 @@ describe("Project Manger", () => {
     it('Should be callable.', () => {
       expect(() => {
         prm.addProject({
-          id: 2
+          alias: 2
         })
       }).not.toThrow()
     })
@@ -218,14 +220,16 @@ describe("Project Manger", () => {
     it('Should add progress', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: 'Project 1'
       })
-      expect(prm.list[0].id).toBe(1)
+      expect(prm.list[0].alias).toBe(1)
       expect(prm.list[0].progress).not.toBeUndefined()
     })
   })
 
+
+  // ==============================[ addProjectList() ]==============================
   describe('"addProjectList" method', () => {
     const prm = new ProjectManager()
 
@@ -236,7 +240,7 @@ describe("Project Manger", () => {
     it('Should be callable.', () => {
       expect(() => {
         prm.addProjectList([{
-          id: 2
+          alias: 2
         }])
       }).not.toThrow()
     })
@@ -252,10 +256,11 @@ describe("Project Manger", () => {
     })
   })
 
+  // ==============================[ updateProject() ]===============================
   describe('"updateProject" method', () => {
     const prm = new ProjectManager()
     prm.addProject({
-      id: 2,
+      alias: 2,
       title: 'Hello world'
     })
 
@@ -266,7 +271,7 @@ describe("Project Manger", () => {
     it('Should be callable.', () => {
       expect(() => {
         prm.updateProject({
-          id: 2,
+          alias: 2,
           title: 'Hello world 2'
         })
       }).not.toThrow()
@@ -283,6 +288,7 @@ describe("Project Manger", () => {
     })
   })
 
+  // ==============================[ deleteProject() ]===============================
   describe('"deleteProject" method', () => {
     it('Should not be undefined.', () => {
       const prm = new ProjectManager()
@@ -292,12 +298,12 @@ describe("Project Manger", () => {
     it('Should be callable.', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: "Sample project 1"
       })
       expect(() => {
         prm.deleteProject({
-          id: 1
+          alias: 1
         })
       }).not.toThrow()
     })
@@ -305,22 +311,23 @@ describe("Project Manger", () => {
     it('Should delete project from list.', () => {
       const prm = new ProjectManager()
       const project = {
-        id: 1,
+        alias: 1,
         title: "project 1"
       }
       prm.addProject(project)
       prm.deleteProject({
-        id: project.id,
+        alias: project.alias,
       })
 
       expect(prm.list.length).not.toBeGreaterThan(0)
     })
   })
 
+  // ================================[ getProject() ]================================
   describe('"getProject" method', () => {
     const prm = new ProjectManager()
     prm.addProject({
-      id: 2,
+      alias: 2,
       title: 'Hello world'
     })
 
@@ -331,18 +338,19 @@ describe("Project Manger", () => {
     it('Should be callable.', () => {
       expect(() => {
         prm.getProject({
-          id: 2,
+          alias: 2,
         })
       }).not.toThrow()
     })
 
     it('Should return details info of project from list.', () => {
-      const projectInfo = prm.getProject({id: 2})
+      const projectInfo = prm.getProject({alias: 2})
       expect(projectInfo.title).not.toBeUndefined()
       expect(projectInfo.todoList).not.toBeUndefined()
     })
   })
 
+  // =================================[ addTodo() ]==================================
   describe('"addTodo" method', () => {
     it('Should not be undefined.', () => {
       const prm = new ProjectManager()
@@ -352,12 +360,12 @@ describe("Project Manger", () => {
     it('Should be callable.', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 2,
+        alias: 2,
         title: 'Hello world'
       })
       expect(() => {
         prm.addTodo({
-          id: 2,
+          alias: 2,
           project: 2,
           title: "Sample todo",
           position: 1
@@ -368,11 +376,11 @@ describe("Project Manger", () => {
     it('Should add todo in "todoList".', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 2,
+        alias: 2,
         title: 'Hello world'
       })
       prm.addTodo({
-        id: 2,
+        alias: 2,
         project: 2,
         title: "Sample todo",
         position: 1,
@@ -381,14 +389,112 @@ describe("Project Manger", () => {
       expect(projectInfo.todoList.length).not.toBe(0)
     })
 
+    describe('Todo with parent', () => {
+      it('Should not be in "todoList"', () => {
+        const prm = new ProjectManager()
+        prm.addProject({
+          alias: 2,
+          title: 'Hello world'
+        })
+        prm.addTodo({
+          alias: 3,
+          project: 2,
+          title: "Sample todo 2",
+          parent: 2,
+          position: 1
+        })
+        const project = prm.list[0]
+        expect(project.todoList.length).not.toBeGreaterThan(0)
+      })
+
+      it('Should add todo as subTask', () => {
+        const prm = new ProjectManager()
+        prm.addProject({
+          alias: 2,
+          title: 'Hello world'
+        })
+        prm.addTodo({
+          alias: 3,
+          project: 2,
+          title: "Sample todo 2",
+          parent: 2,
+          position: 1
+        })
+        prm.addTodo({
+          alias: 2,
+          project: 2,
+          title: "Sample todo 2",
+          position: 1
+        })
+        const project = prm.list[0]
+        const firstTodo = project.todoList[0]
+        expect(firstTodo.subTask.length).toBeGreaterThan(0)
+      })
+
+      describe('Todo with child first', () => {
+        it('Should not be in "list"', () => {
+          const prm = new ProjectManager()
+          prm.addProject({
+            alias: 2,
+            title: 'Hello world'
+          })
+          prm.addTodo({
+            alias: 2,
+            project: 2,
+            title: "Sample todo 2",
+            position: 1,
+          })
+          prm.addTodo({
+            alias: 9,
+            project: 2,
+            title: "Sample todo 9",
+            parent: 4,
+            position: 1,
+          })
+          const project = prm.list[0]
+          expect(project.todoList.length).not.toBeGreaterThan(1)
+        })
+
+        it('Should appear after parent todo is added', () => {
+          const prm = new ProjectManager()
+          prm.addProject({
+            alias: 2,
+            title: 'Hello world'
+          })
+          prm.addTodo({
+            alias: 2,
+            project: 2,
+            title: "Sample todo 2",
+            position: 1,
+          })
+          prm.addTodo({
+            alias: 9,
+            project: 2,
+            title: "Sample todo 9",
+            parent: 4,
+            position: 1,
+          })
+          prm.addTodo({
+            alias: 4,
+            project: 2,
+            title: "Sample todo 4",
+            position: 2,
+          })
+          const project = prm.list[0]
+          expect(project.todoList.length).toBe(2)
+        })
+      })
+    })
+
+
     it('Should add progress', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: "Project 1"
       })
       prm.addTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         title: 'Todo 1',
         position: 1
@@ -397,7 +503,7 @@ describe("Project Manger", () => {
       expect(prm.list[0].todoList[0].progress).toBe(0)
 
       prm.addTodo({
-        id: 2,
+        alias: 2,
         project: 1,
         title: 'Todo 2',
         position: 2,
@@ -410,11 +516,11 @@ describe("Project Manger", () => {
     it('Should update progress of project.', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: 'Project 1'
       })
       prm.addTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         position: 1,
         title: 'Todo 1',
@@ -424,7 +530,7 @@ describe("Project Manger", () => {
       expect(prm.list[0].progress).toBe(100)
 
       prm.addTodo({
-        id: 2,
+        alias: 2,
         project: 1,
         position: 2,
         title: 'Todo 2',
@@ -435,24 +541,24 @@ describe("Project Manger", () => {
     it('Should update progress of parent todo', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: "Project 1"
       })
       prm.addTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         title: 'Todo 1',
         position: 1
       })
       prm.addTodo({
-        id: 2,
+        alias: 2,
         project: 1,
         title: 'Todo 2',
         position: 1,
         parent: 1
       })
       prm.addTodo({
-        id: 3,
+        alias: 3,
         project: 1,
         title: 'Todo 3',
         position: 2,
@@ -460,20 +566,20 @@ describe("Project Manger", () => {
         done: true,
       })
 
-      expect(prm.list[0].todoList[0].subTask[0].id).toBe(2)
+      expect(prm.list[0].todoList[0].subTask[0].alias).toBe(2)
       expect(prm.list[0].todoList[0].subTask[0].progress).not.toBeUndefined()
       expect(prm.list[0].todoList[0].subTask[0].progress).toBe(0)
 
-      expect(prm.list[0].todoList[0].subTask[1].id).toBe(3)
+      expect(prm.list[0].todoList[0].subTask[1].alias).toBe(3)
       expect(prm.list[0].todoList[0].subTask[1].progress).not.toBeUndefined()
       expect(prm.list[0].todoList[0].subTask[1].progress).toBe(100)
 
-      expect(prm.list[0].todoList[0].id).toBe(1)
+      expect(prm.list[0].todoList[0].alias).toBe(1)
       expect(prm.list[0].todoList[0].progress).not.toBeUndefined()
       expect(prm.list[0].todoList[0].progress).toBe(50)
 
       prm.addTodo({
-        id: 4,
+        alias: 4,
         project: 1,
         title: 'Todo 4',
         position: 3,
@@ -485,21 +591,21 @@ describe("Project Manger", () => {
     it('Should update progress of parent todo (partially)', () => {
       const prm = new ProjectManager()
       const project1 = {
-        id: 1,
+        alias: 1,
         title: 'Project 1',
       }
       prm.addProject(project1)
 
       prm.addTodo({
-        id: 1,
-        project: project1.id,
+        alias: 1,
+        project: project1.alias,
         title: 'Todo 1',
         position: 1
       })
 
       prm.addTodo({
-        id: 2,
-        project: project1.id,
+        alias: 2,
+        project: project1.alias,
         title: 'Todo 1.1',
         position: 1,
         parent: 1,
@@ -507,16 +613,16 @@ describe("Project Manger", () => {
       })
 
       prm.addTodo({
-        id: 3,
-        project: project1.id,
+        alias: 3,
+        project: project1.alias,
         title: 'Todo 1.2',
         position: 2,
         parent: 1
       })
 
       prm.addTodo({
-        id: 4,
-        project: project1.id,
+        alias: 4,
+        project: project1.alias,
         title: 'Todo 1.2.1',
         position: 1,
         parent: 3,
@@ -524,8 +630,8 @@ describe("Project Manger", () => {
       })
 
       prm.addTodo({
-        id: 5,
-        project: project1.id,
+        alias: 5,
+        project: project1.alias,
         title: 'Todo 1.2.2',
         position: 2,
         parent: 3
@@ -541,35 +647,35 @@ describe("Project Manger", () => {
     it('Should add todo in sorted position', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: "Project 1"
       })
       prm.addTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         title: "Todo 1",
         position: 1,
       })
       prm.addTodo({
-        id: 2,
+        alias: 2,
         project: 1,
         title: "Todo 1",
         position: 0.75,
       })
       prm.addTodo({
-        id: 3,
+        alias: 3,
         project: 1,
         title: "Todo 1",
         position: 3,
       })
       prm.addTodo({
-        id: 4,
+        alias: 4,
         project: 1,
         title: "Todo 1",
         position: 4,
       })
       prm.addTodo({
-        id: 5,
+        alias: 5,
         project: 1,
         title: "Todo 1",
         position: 0.5,
@@ -578,36 +684,36 @@ describe("Project Manger", () => {
 
       const todoList = prm.list[0].todoList
       expect(todoList.length).toBe(5)
-      expect(todoList[0].id).toBe(5)
-      expect(todoList[1].id).toBe(2)
-      expect(todoList[2].id).toBe(1)
-      expect(todoList[3].id).toBe(3)
-      expect(todoList[4].id).toBe(4)
+      expect(todoList[0].alias).toBe(5)
+      expect(todoList[1].alias).toBe(2)
+      expect(todoList[2].alias).toBe(1)
+      expect(todoList[3].alias).toBe(3)
+      expect(todoList[4].alias).toBe(4)
     })
 
 
     it('Should add todo and subTask also should be sorted', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: "Project 1"
       })
 
       prm.addTodo({
-        id: 1,
+        alias: 1,
         position: 2,
         project: 1,
         title: "Todo 1",
       })
       prm.addTodo({
-        id: 2,
+        alias: 2,
         position: 1,
         project: 1,
         title: "Todo 2",
       })
 
       prm.addTodo({
-        id: 3,
+        alias: 3,
         position: 3,
         project: 1,
         parent: 2,
@@ -615,7 +721,7 @@ describe("Project Manger", () => {
       })
 
       prm.addTodo({
-        id: 4,
+        alias: 4,
         position: 4,
         project: 1,
         parent: 2,
@@ -623,7 +729,7 @@ describe("Project Manger", () => {
       })
 
       prm.addTodo({
-        id: 5,
+        alias: 5,
         position: 3.5,
         project: 1,
         parent: 2,
@@ -631,7 +737,7 @@ describe("Project Manger", () => {
       })
 
       prm.addTodo({
-        id: 6,
+        alias: 6,
         position: 2.5,
         project: 1,
         parent: 2,
@@ -641,19 +747,19 @@ describe("Project Manger", () => {
       const {todoList} = prm.list[0];
       expect(todoList.length).toBe(2);
 
-      expect(todoList[0].id).toBe(2)
-      expect(todoList[1].id).toBe(1)
+      expect(todoList[0].alias).toBe(2)
+      expect(todoList[1].alias).toBe(1)
 
       const {subTask} = todoList[0];
       expect(subTask.length).toBe(4)
 
-      expect(subTask[0].id).toBe(6)
-      expect(subTask[1].id).toBe(3)
-      expect(subTask[2].id).toBe(5)
-      expect(subTask[3].id).toBe(4)
+      expect(subTask[0].alias).toBe(6)
+      expect(subTask[1].alias).toBe(3)
+      expect(subTask[2].alias).toBe(5)
+      expect(subTask[3].alias).toBe(4)
 
       prm.updateTodo({
-        id: 3,
+        alias: 3,
         position: 5,
         project: 1,
         parent: 2,
@@ -662,110 +768,14 @@ describe("Project Manger", () => {
 
       const newSubTask = prm.list[0].todoList[0].subTask;
       expect(newSubTask.length).toBe(4)
-      expect(newSubTask[0].id).toBe(6)
-      expect(newSubTask[1].id).toBe(5)
-      expect(newSubTask[2].id).toBe(4)
-      expect(newSubTask[3].id).toBe(3)
-    })
-
-    describe('Todo with parent', () => {
-      it('Should not be in "todoList"', () => {
-        const prm = new ProjectManager()
-        prm.addProject({
-          id: 2,
-          title: 'Hello world'
-        })
-        prm.addTodo({
-          id: 3,
-          project: 2,
-          title: "Sample todo 2",
-          parent: 2,
-          position: 1
-        })
-        const project = prm.list[0]
-        expect(project.todoList.length).not.toBeGreaterThan(1)
-      })
-
-      it('Should add todo as subTask', () => {
-        const prm = new ProjectManager()
-        prm.addProject({
-          id: 2,
-          title: 'Hello world'
-        })
-        prm.addTodo({
-          id: 3,
-          project: 2,
-          title: "Sample todo 2",
-          parent: 2,
-          position: 1
-        })
-        prm.addTodo({
-          id: 2,
-          project: 2,
-          title: "Sample todo 2",
-          position: 1
-        })
-        const project = prm.list[0]
-        const firstTodo = project.todoList[0]
-        expect(firstTodo.subTask.length).toBeGreaterThan(0)
-      })
-
-      describe('Todo with child first', () => {
-        it('Should not be in "list"', () => {
-          const prm = new ProjectManager()
-          prm.addProject({
-            id: 2,
-            title: 'Hello world'
-          })
-          prm.addTodo({
-            id: 2,
-            project: 2,
-            title: "Sample todo 2",
-            position: 1,
-          })
-          prm.addTodo({
-            id: 9,
-            project: 2,
-            title: "Sample todo 9",
-            parent: 4,
-            position: 1,
-          })
-          const project = prm.list[0]
-          expect(project.todoList.length).not.toBeGreaterThan(1)
-        })
-
-        it('Should appear after parent todo is added', () => {
-          const prm = new ProjectManager()
-          prm.addProject({
-            id: 2,
-            title: 'Hello world'
-          })
-          prm.addTodo({
-            id: 2,
-            project: 2,
-            title: "Sample todo 2",
-            position: 1,
-          })
-          prm.addTodo({
-            id: 9,
-            project: 2,
-            title: "Sample todo 9",
-            parent: 4,
-            position: 1,
-          })
-          prm.addTodo({
-            id: 4,
-            project: 2,
-            title: "Sample todo 4",
-            position: 2,
-          })
-          const project = prm.list[0]
-          expect(project.todoList.length).toBe(2)
-        })
-      })
+      expect(newSubTask[0].alias).toBe(6)
+      expect(newSubTask[1].alias).toBe(5)
+      expect(newSubTask[2].alias).toBe(4)
+      expect(newSubTask[3].alias).toBe(3)
     })
   })
 
+  // ================================[ deleteTodo() ]================================
   describe('"deleteTodo" method', () => {
     it('Should not be undefined.', () => {
       const prm = new ProjectManager()
@@ -775,13 +785,13 @@ describe("Project Manger", () => {
     it('Should delete todo from "todoList".', () => {
       const prm = new ProjectManager()
       const project = {
-        id: 1
+        alias: 1
       }
       prm.addProject(project)
 
       const todo = {
-        id: 1,
-        project: project.id,
+        alias: 1,
+        project: project.alias,
         position: 1
       }
       prm.addTodo(todo)
@@ -796,21 +806,21 @@ describe("Project Manger", () => {
     it('Should delete todo from "subTask".', () => {
       const prm = new ProjectManager()
       const project = {
-        id: 1
+        alias: 1
       }
       prm.addProject(project)
 
       const todo1 = {
-        id: 1,
-        project: project.id,
+        alias: 1,
+        project: project.alias,
         position: 1,
       }
       prm.addTodo(todo1)
 
       const todo2 = {
-        id: 2,
-        project: project.id,
-        parent: todo1.id,
+        alias: 2,
+        project: project.alias,
+        parent: todo1.alias,
         position: 2,
       }
       prm.addTodo(todo2)
@@ -826,24 +836,24 @@ describe("Project Manger", () => {
     it('Should update progress of parent todo', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: 'Project 1'
       })
       prm.addTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         position: 1,
         title: 'Todo 1'
       })
       prm.addTodo({
-        id: 2,
+        alias: 2,
         project: 1,
         position: 1,
         parent: 1,
         title: 'Todo 1.1',
       })
       prm.addTodo({
-        id: 3,
+        alias: 3,
         project: 1,
         position: 2,
         parent: 1,
@@ -856,12 +866,13 @@ describe("Project Manger", () => {
       expect(prm.list[0].todoList[0].subTask[1].progress).toBe(100)
       expect(prm.list[0].todoList[0].progress).toBe(50)
 
-      prm.deleteTodo({id: 2})
+      prm.deleteTodo({alias: 2})
       expect(prm.list[0].todoList[0].subTask[0].progress).toBe(100)
       expect(prm.list[0].todoList[0].progress).toBe(100)
     })
   })
 
+  // ================================[ updateTodo() ]================================
   describe('"updateTodo" method', () => {
     it('Should not be undefined', () => {
       const prm = new ProjectManager()
@@ -871,17 +882,17 @@ describe("Project Manger", () => {
     it('Should update todo.', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1
+        alias: 1
       })
       prm.addTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         title: "todo 1",
         position: 1,
       })
 
       prm.updateTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         title: "todo 1.1",
         position: 1,
@@ -894,61 +905,61 @@ describe("Project Manger", () => {
     it('Should update todo in proper order', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: "Project 1"
       })
       prm.addTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         title: "Todo 1",
         position: 1
       })
       prm.addTodo({
-        id: 2,
+        alias: 2,
         project: 1,
         title: "Todo 2",
         position: 2
       })
 
       prm.updateTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         title: "Todo 1.2",
         position: 1
       })
 
-      expect(prm.list[0].todoList[0].id).toBe(1)
+      expect(prm.list[0].todoList[0].alias).toBe(1)
     })
 
     it('Should update todo (with parent without distroying child)', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1
+        alias: 1
       })
       prm.addTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         position: 1,
       })
       prm.addTodo({
-        id: 2,
+        alias: 2,
         project: 1,
         position: 2,
       })
       prm.addTodo({
-        id: 3,
+        alias: 3,
         project: 1,
         parent: 1,
         position: 1,
       })
       prm.addTodo({
-        id: 4,
+        alias: 4,
         project: 1,
         parent: 3,
         position: 1,
       })
       prm.addTodo({
-        id: 5,
+        alias: 5,
         project: 1,
         parent: 3,
         position: 2,
@@ -965,7 +976,7 @@ describe("Project Manger", () => {
       expect(addedTodo2.subTask.length).not.toBeGreaterThan(0)
 
       prm.updateTodo({
-        id: 3,
+        alias: 3,
         project: 1,
         parent: 2,
         position: 1,
@@ -981,19 +992,19 @@ describe("Project Manger", () => {
     it('Should update progress', () => {
       const prm = new ProjectManager()
       prm.addProject({
-        id: 1,
+        alias: 1,
         title: 'Project 1'
       })
 
       prm.addTodo({
-        id: 1,
+        alias: 1,
         project: 1,
         position: 1,
         title: 'Todo 1'
       })
 
       prm.addTodo({
-        id: 2,
+        alias: 2,
         project: 1,
         position: 1,
         parent: 1,
@@ -1002,7 +1013,7 @@ describe("Project Manger", () => {
       })
 
       prm.addTodo({
-        id: 3,
+        alias: 3,
         project: 1,
         position: 2,
         parent: 1,
@@ -1014,7 +1025,7 @@ describe("Project Manger", () => {
       expect(prm.list[0].todoList[0].progress).toBe(50)
 
       prm.updateTodo({
-        id: 3,
+        alias: 3,
         project: 1,
         position: 2,
         parent: 1,

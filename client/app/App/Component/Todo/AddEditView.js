@@ -69,12 +69,12 @@ class TodoAddEditView extends Component {
 
     const payload = {
       ...this.state.form,
-      project: project.id,
+      project: project.alias,
       ...(todo ? {
-        id: todo.id
+        alias: todo.alias
       } : {}),
       ...(parent ? {
-        parent: parent.id
+        parent: parent.alias
       } : {}),
     }
 

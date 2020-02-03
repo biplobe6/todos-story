@@ -20,7 +20,7 @@ class ProjectList extends Component {
       <div id="todo-list-container">
         {projectList.map((project) => (
           <Project
-            key={project.id}
+            key={project.alias}
             updatedAt={project.updatedAt}
             project={project}
             getTodos={this.props.getTodos}

@@ -9,10 +9,10 @@ const getPosition = ({project, parent}) => {
   const {prm} = state;
 
 
-  const todoList = typeof parent == 'number' ? (
-    prm.getTodo({id: parent}).subTask
+  const todoList = parent ? (
+    prm.getTodo({alias: parent}).subTask
   ) : (
-    prm.getProject({id: project}).todoList
+    prm.getProject({alias: project}).todoList
   )
 
   let position = 1;
@@ -42,7 +42,7 @@ export const ActionGetTodos = (project) => (dispatch) => {
   }
 
   ApiHelper.todos.get({
-    project: project.id,
+    project: project.alias,
   }).then(onSuccess).catch(onError)
 }
 
@@ -93,7 +93,7 @@ export const ActionEditTodo = (data) => (dispatch) => {
   }
 
   ApiHelper.todo.patch(payload, {
-    id: payload.id,
+    alias: payload.alias,
   }).then(onSuccess).catch(onError)
 }
 
@@ -114,7 +114,7 @@ export const AcitonDeleteTodo = (data) => (dispatch) => {
   }
 
   ApiHelper.todo.delete({
-    id: data.id
+    alias: data.alias
   }).then(onSuccess).catch(onError)
 }
 
@@ -134,7 +134,7 @@ export const ActionOnDragTodo = (data) => (dispatch) => {
 const createNewPosition = ({referenceTodo, todoList=[], todoToMove, up=false, down=false}) => {
   let position = 0
   const todoIndex = todoList.findIndex(todo => (
-    todo.id == referenceTodo.id
+    todo.alias == referenceTodo.alias
   ))
 
   const isSameParent = (referenceTodo.parent == todoToMove.parent) && (
@@ -195,9 +195,9 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
     up: direction == 'up',
     down: direction == 'down',
     todoList: (
-      typeof referenceTodo.parent == 'number' ? (
-        prm.getTodo({id: referenceTodo.parent}).subTask
-      ) : prm.getProject({id: referenceTodo.project}).todoList
+      referenceTodo.parent ? (
+        prm.getTodo({alias: referenceTodo.parent}).subTask
+      ) : prm.getProject({alias: referenceTodo.project}).todoList
     ),
   })
 
@@ -218,17 +218,17 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
   }
 
   const parentReference = (
-    (typeof referenceTodo.parent == 'number') && !isSameParent
+    (referenceTodo.parent) && !isSameParent
   ) ? ({
     parent: referenceTodo.parent
   }) : ({})
 
   ApiHelper.todo.patch({
-    id: todoToMove.id,
+    alias: todoToMove.alias,
     position: newPosition,
     ...parentReference,
   }, {
-    id: todoToMove.id
+    alias: todoToMove.alias
   }).then(onSuccess).catch(onError)
 
 }
@@ -248,7 +248,7 @@ export const ActionToggleTodoStatus = (data) => (dispatch) => {
   }
 
   ApiHelper.todo.patch(
-    data, {id: data.id}
+    data, {alias: data.alias}
   ).then(onSuccess).catch(onError)
 }
 

@@ -89,14 +89,14 @@ class Todo extends Component {
 
   toggleStatus(event){
     this.props.toggleTodoStatus({
-      id: this.props.todo.id,
+      alias: this.props.todo.alias,
       done: event.target.checked,
     })
   }
 
   render() {
     const {todo, project} = this.props;
-    const {title, id, story, subTask, progress, done} = todo;
+    const {title, rq, story, subTask, progress, done} = todo;
     const {addView, editView, detailsView, subMenuExpended} = this.state;
     return (
       <DragNDrop
@@ -132,7 +132,7 @@ class Todo extends Component {
                     className="short-view title"
                     onDoubleClick={this.toggleEditView}
                     onClick={this.toggleDetailsViewHandler}>
-                    <span className="text-muted">[#{id} ({progress}%)] </span>
+                    <span className="text-muted">[#{rq} ({progress}%)] </span>
                     <span>
                       {done ? <del>{title}</del> : title}
                     </span>

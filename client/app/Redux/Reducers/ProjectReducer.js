@@ -59,7 +59,7 @@ const reducerGetTodos = (state, action) => {
   const {prm} = state;
 
   data.forEach(todo => {
-    if(prm.todosHash[todo.id]){
+    if(prm.todosHash[todo.alias]){
       prm.updateTodo(todo)
     } else {
       prm.addTodo(todo)

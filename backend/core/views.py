@@ -12,7 +12,7 @@ class ProjectListCreateView(generics.ListCreateAPIView):
 class ProjectDetailsView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializer.ProjectSerializer
     queryset = models.Project.objects.all()
-    lookup_field = 'id'
+    lookup_field = 'alias'
 
 
 class TodoListCreateView(generics.ListCreateAPIView):
@@ -25,6 +25,6 @@ class TodoListCreateView(generics.ListCreateAPIView):
 class TodoDetailsView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = serializer.TodoSerializer
     queryset = models.Todo.objects.all()
-    lookup_field = 'id'
+    lookup_field = 'alias'
 
 

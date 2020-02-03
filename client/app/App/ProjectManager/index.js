@@ -8,19 +8,19 @@ export class ProjectManager {
     this.projectsHash = {};
   }
 
-  getProject({id}){
-    return this.projectsHash[id]
+  getProject({alias}){
+    return this.projectsHash[alias]
   }
 
-  getTodo({id}){
-    return this.todosHash[id]
+  getTodo({alias}){
+    return this.todosHash[alias]
   }
 
   updateProject(projectData){
     const project = Object.assign({}, projectData)
     const oldProject = this.getProject(project)
     Object.assign(oldProject, project)
-    this.projectsHash[oldProject.id] = oldProject;
+    this.projectsHash[oldProject.alias] = oldProject;
     this.updateEntry(oldProject)
   }
 
@@ -28,7 +28,7 @@ export class ProjectManager {
     const project = Object.assign({}, projectData)
     project.todoList = []
     project.progress = 0;
-    this.projectsHash[project.id] = project;
+    this.projectsHash[project.alias] = project;
     this.list.push(project)
     this.updateEntry(project)
   }
@@ -39,22 +39,22 @@ export class ProjectManager {
     })
   }
 
-  deleteProject({id}){
+  deleteProject({alias}){
     const projectIndex = this.list.findIndex(project => (
-      project.id == id
+      project.alias == alias
     ))
     this.list.splice(projectIndex, 1)
-    delete this.projectsHash[id]
+    delete this.projectsHash[alias]
   }
 
   updateEntry(entryData){
     const entry = entryData.project ? (
-      this.todosHash[entryData.id]
-    ) : this.projectsHash[entryData.id]
+      this.todosHash[entryData.alias]
+    ) : this.projectsHash[entryData.alias]
     const date = new Date().getTime()
     const newData = {
       updatedAt: date,
-      key: `${entry.id}-${date}`
+      key: `${entry.alias}-${date}`
     }
 
     const updateObject = (obj) => {
@@ -98,10 +98,10 @@ export class ProjectManager {
     } else {
       todo.progress = todo.done ? 100 : 0
     }
-    if(typeof todo.parent == 'number'){
+    if(todo.parent){
       const parentTodo = this.todosHash[todo.parent]
       this.updateTodoProgress(parentTodo)
-    } else if(typeof todo.project == 'number'){
+    } else if(todo.project){
       const project = this.projectsHash[todo.project]
       const projectPercentage = 100 / project.todoList.length
       project.progress = 0;
@@ -114,13 +114,13 @@ export class ProjectManager {
 
   addTodo(todoData){
     const todo =Object.assign({}, todoData)
-    const project = this.getProject({id: todo.project})
+    const project = this.getProject({alias: todo.project})
 
-    const hashedTodo = this.todosHash[todo.id];
+    const hashedTodo = this.todosHash[todo.alias];
     if(hashedTodo){
       Object.assign(todo, hashedTodo)
     }
-    this.todosHash[todo.id] = todo;
+    this.todosHash[todo.alias] = todo;
 
     if(!todo.subTask){
       todo.subTask = []
@@ -143,31 +143,31 @@ export class ProjectManager {
     this.updateEntry(todo)
   }
 
-  deleteTodo({id}){
-    const todo = this.todosHash[id]
+  deleteTodo({alias}){
+    const todo = this.todosHash[alias]
     let todoIndex;
     if(!todo.parent){
-      const project = this.getProject({id: todo.project})
+      const project = this.getProject({alias: todo.project})
       todoIndex = project.todoList.findIndex(targetTodo => (
-        targetTodo.id == todo.id
+        targetTodo.alias == todo.alias
       ))
       project.todoList.splice(todoIndex, 1)
       this.updateEntry(project)
     } else {
       const parentTodo = this.todosHash[todo.parent]
       todoIndex = parentTodo.subTask.findIndex(targetTodo => (
-        targetTodo.id == todo.id
+        targetTodo.alias == todo.alias
       ))
       parentTodo.subTask.splice(todoIndex, 1)
       this.updateTodoProgress(parentTodo)
       this.updateEntry(parentTodo)
     }
-    delete this.todosHash[todo.id]
+    delete this.todosHash[todo.alias]
   }
 
   updateTodo(todo){
     let todoIndex
-    const oldTodo = Object.assign({}, this.todosHash[todo.id]);
+    const oldTodo = Object.assign({}, this.todosHash[todo.alias]);
     const newTodo = Object.assign({}, oldTodo, todo);
 
     const updatePosition = (
@@ -183,17 +183,17 @@ export class ProjectManager {
       if(oldTodo.parent){
         const parentTodo = this.todosHash[oldTodo.parent]
         todoIndex = parentTodo.subTask.findIndex(targetTodo => (
-          targetTodo.id == oldTodo.id
+          targetTodo.alias == oldTodo.alias
         ))
         parentTodo.subTask[todoIndex] = newTodo
       } else {
         const project = this.projectsHash[oldTodo.project]
         todoIndex = project.todoList.findIndex(targetTodo => (
-          targetTodo.id == oldTodo.id
+          targetTodo.alias == oldTodo.alias
         ))
         project.todoList[todoIndex] = newTodo
       }
-      this.todosHash[todo.id] = newTodo
+      this.todosHash[todo.alias] = newTodo
       this.updateTodoProgress(newTodo)
       this.updateEntry(newTodo);
     }

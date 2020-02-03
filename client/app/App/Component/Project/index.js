@@ -75,7 +75,7 @@ class Project extends Component {
           <div
             className="title"
             onClick={this.toggleView}>
-            <span className="text-muted">[{`#${id}${progress ? ` (${progress}%)`: ''}`}] </span>
+            <span className="text-muted">{progress ? `[${progress}%]`: ''} </span>
             <span title={description}>{title}</span>
           </div>
           {editView && (
