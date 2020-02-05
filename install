@@ -31,6 +31,7 @@ if [ "$choice" == "yes" ]; then
   python -m pip install pip -U
   pip install -r requirements.txt
   python manage.py migrate
+  cp -r static_files ../client/dist
   echo "Done."
 else
   echo "Aborting."
