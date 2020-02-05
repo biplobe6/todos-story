@@ -41,6 +41,8 @@ if not DEBUG and os.environ.get('DEBUG', None) == 'TRUE':
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
+if DEBUG:
+    ALLOWED_HOSTS.append('testserver')
 
 # Application definition
 
@@ -111,9 +113,9 @@ CELERY_RESULT_BACKEND = 'db+sqlite:///' + CELERY_DB
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 
-LOGGING = {
-    'version': 1,
-}
+from django.utils.log import DEFAULT_LOGGING
+
+LOGGING = DEFAULT_LOGGING
 
 if DEBUG:
     if 'filters' not in LOGGING:
@@ -147,7 +149,7 @@ if DEBUG:
     })
 
     LOGGING['handlers'].update({
-        'console': {
+        'sql-console': {
             'level': 'DEBUG',
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
@@ -158,7 +160,7 @@ if DEBUG:
     LOGGING['loggers'].update({
         'django.db.backends': {
             'level': 'ERROR',
-            'handlers': ['console'],
+            'handlers': ['sql-console'],
         },
     })
 

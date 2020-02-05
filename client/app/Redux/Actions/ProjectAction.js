@@ -1,5 +1,6 @@
 import ApiHelper from "App/Utils/ApiHelper"
 import { ActionList } from "Redux/ActionList"
+import { ActionGetTodos } from "./TodoAction"
 
 
 
@@ -75,6 +76,34 @@ export const ActionUpdateProject = (data) => (dispatch) => {
     data.getPayload(),
     {alias: data.oldPayload().alias},
   ).then(onSuccess).catch(onError)
+}
+
+
+export const ActionExportProject = (alias) => (dispatch) => {
+  const onError = (error) => {
+    console.error(error)
+  }
+
+  ApiHelper.projectExport.get({
+    alias,
+  }).catch(onError)
+}
+
+
+export const ActionImportProject = (alias) => (dispatch) => {
+  const onSuccess = (response) => {
+    ActionGetTodos({
+      alias,
+    })(dispatch)
+  }
+
+  const onError = (error) => {
+    console.error(error)
+  }
+
+  ApiHelper.projectImport.get({
+    alias,
+  }).then(onSuccess).catch(onError)
 }
 
 

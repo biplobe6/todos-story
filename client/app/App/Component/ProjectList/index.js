@@ -5,6 +5,8 @@ import {
   ActionGetProjectList,
   ActionDeleteProject,
   ActionOnDragTodo,
+  ActionExportProject,
+  ActionImportProject,
 } from 'Redux/Actions/ProjectAction';
 
 import Project from 'App/Component/Project';
@@ -24,7 +26,9 @@ class ProjectList extends Component {
             updatedAt={project.updatedAt}
             project={project}
             getTodos={this.props.getTodos}
-            deleteProject={this.props.deleteProject} />
+            deleteProject={this.props.deleteProject}
+            exportProject={this.props.exportProject}
+            importProject={this.props.importProject} />
         ))}
       </div>
     )
@@ -39,6 +43,8 @@ const mapDispatchToProps = {
   getTodos: ActionGetTodos,
   getProjectList: ActionGetProjectList,
   deleteProject: ActionDeleteProject,
+  exportProject: ActionExportProject,
+  importProject: ActionImportProject,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
   ProjectList

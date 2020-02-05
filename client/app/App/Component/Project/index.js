@@ -14,6 +14,8 @@ class Project extends Component {
     this.deleteHandler = this.deleteHandler.bind(this);
     this.showTodoAddView = this.showTodoAddView.bind(this);
     this.hideTodoAddView = this.hideTodoAddView.bind(this);
+    this.exportProject = this.exportProject.bind(this);
+    this.importProject = this.importProject.bind(this);
 
     this.state = {
       showTodoList: false,
@@ -50,6 +52,16 @@ class Project extends Component {
     this.setState(({editView}) => ({
       editView: !editView
     }))
+  }
+
+  exportProject(){
+    const {exportProject, project} = this.props;
+    exportProject(project.alias)
+  }
+
+  importProject(){
+    const {importProject, project} = this.props;
+    importProject(project.alias)
   }
 
   deleteHandler(event){
@@ -108,6 +120,18 @@ class Project extends Component {
             )) || (
               <i title="Edit Project" className="fa fa-edit"></i>
             )}
+          </span>
+          <span
+            className="menu"
+            title="Export Project into assets"
+            onClick={this.exportProject}>
+            <i className="fa fa-download"></i>
+          </span>
+          <span
+            className="menu"
+            title="Import Project from assets"
+            onClick={this.importProject}>
+            <i className="fa fa-upload"></i>
           </span>
           <span
             className="menu"

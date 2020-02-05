@@ -7,6 +7,12 @@ export const ApiHelper = {
   project: registerApi({
     url: ({alias}) => `/project/${alias}`
   }),
+  projectExport: registerApi({
+    url: ({alias}) => `/project/export/${alias}`
+  }),
+  projectImport: registerApi({
+    url: ({alias}) => `/project/import/${alias}`
+  }),
   todos: registerApi({
     url: '/todo'
   }),

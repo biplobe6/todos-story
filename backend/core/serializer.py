@@ -8,6 +8,14 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ProjectIOSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Project
+        exclude = [
+            'assets_dir'
+        ]
+
+
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Todo

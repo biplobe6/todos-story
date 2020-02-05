@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from rest_framework import generics
+from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from core import serializer, models
+from core.tasks import export_projects, import_projects
 
 
 class ProjectListCreateView(generics.ListCreateAPIView):
@@ -28,3 +30,13 @@ class TodoDetailsView(generics.RetrieveUpdateDestroyAPIView):
     lookup_field = 'alias'
 
 
+
+def export_project(request, alias):
+    export_projects.delay(alias)
+    return HttpResponse()
+
+
+def import_project(request, alias):
+    task = import_projects.delay(alias)
+    task.wait(timeout=None, interval=0.5)
+    return HttpResponse()
