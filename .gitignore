@@ -5,6 +5,7 @@ backend/venv
 **/__pycache__
 **/.*.sqlite3
 **/.vscode
+**/.idea
 
 client/node_modules
 client/dist

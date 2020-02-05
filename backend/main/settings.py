@@ -154,7 +154,7 @@ if DEBUG:
             'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
             'formatter': 'sqlformatter',
-        }
+        },
     })
 
     LOGGING['loggers'].update({

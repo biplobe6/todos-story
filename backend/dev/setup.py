@@ -3,6 +3,7 @@ import json
 import django
 import sys
 import logging
+from pprint import pprint as _pprint
 
 CWD = os.path.abspath(
     os.path.dirname(__file__)
@@ -39,3 +40,6 @@ def disable_db_log():
 
 def dumps(data):
     print(json.dumps(data, indent=2))
+
+def pprint(data):
+    _pprint(data)

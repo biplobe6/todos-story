@@ -26,4 +26,6 @@ def import_projects(project_alias):
         logger.info('Project imported: "{}"'.format(todo_helper.container))
     except ProjectDoesNotExist:
         logger.error('Project "{}" does not exist'.format(project_alias))
+    except FileNotFoundError:
+        logger.error("File not found: '{}'".format(todo_helper.file_path()))
 

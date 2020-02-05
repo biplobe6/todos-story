@@ -34,7 +34,7 @@ start_server="$( users_choices )"
 if [ "$start_server" == "yes" ]; then
   echo "Starting..."
   celery worker -A main -l info -B &
-  python manage.py runserver
+  python manage.py runserver 8282
 else
   echo "Abort."
 fi
