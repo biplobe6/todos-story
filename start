@@ -1,0 +1,44 @@
+#!/bin/bash
+
+CWD="$( pwd )"
+BASE_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+
+
+users_choices () {
+  read -p "We are going to use this python. Do you wish to continus? (Y/n): " choice
+  if [ "$choice" == "Y" ] || [ "$choice" == "y" ]; then
+    echo "yes"
+  else
+    echo "no"
+  fi
+}
+
+
+activate_env () {
+  activator="venv/bin/activate"
+  if [ -f $activator ]; then
+    . venv/bin/activate
+  fi
+}
+
+
+cd $BASE_DIR
+cd ./backend
+
+
+activate_env
+which python
+start_server="$( users_choices )"
+
+if [ "$start_server" == "yes" ]; then
+  echo "Starting..."
+  celery worker -A main -l info -B &
+  python manage.py runserver
+else
+  echo "Abort."
+fi
+
+
+cd $CWD
+
