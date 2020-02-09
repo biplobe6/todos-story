@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 @shared_task
-def export_projects(project_alias):
+def export_project(project_alias):
     try:
         todo_helper = TodoHelper()
         todo_helper.export_todos(project_alias)
@@ -19,7 +19,7 @@ def export_projects(project_alias):
 
 
 @shared_task
-def import_projects(project_alias):
+def import_project(project_alias):
     try:
         todo_helper = TodoHelper()
         todo_helper.import_todos(project_alias)

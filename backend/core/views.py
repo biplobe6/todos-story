@@ -3,7 +3,7 @@ from rest_framework import generics, status
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from core import serializer, models
-from core.tasks import export_projects, import_projects
+from core.tasks import export_project, import_project
 from utils.validator import Validator, FieldValidator
 from core.todo_helper import TodoFileHelper
 from rest_framework.response import Response
@@ -67,6 +67,7 @@ class ProjectListCreateView(generics.ListCreateAPIView):
             old_data.update(data)
             project = models.Project.objects.create(**old_data)
             serializer = self.get_serializer_class()(project)
+            import_project.delay(old_data['alias'])
         else:
             self.perform_create(serializer)
 
@@ -94,12 +95,12 @@ class TodoDetailsView(generics.RetrieveUpdateDestroyAPIView):
 
 
 
-def export_project(request, alias):
-    export_projects.delay(alias)
+def project_export_view(request, alias):
+    export_project.delay(alias)
     return HttpResponse()
 
 
-def import_project(request, alias):
-    task = import_projects.delay(alias)
+def project_import_view(request, alias):
+    task = import_project.delay(alias)
     task.wait(timeout=None, interval=0.5)
     return HttpResponse()

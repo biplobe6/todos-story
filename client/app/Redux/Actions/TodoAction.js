@@ -1,6 +1,7 @@
 import ApiHelper from "App/Utils/ApiHelper"
 import { ActionList } from "Redux/ActionList"
 import store from 'Root/store';
+import { createNewPosition, isSameParent, SamePositionException } from "App/ProjectManager/position/createNew";
 
 
 
@@ -131,52 +132,6 @@ export const ActionOnDragTodo = (data) => (dispatch) => {
 
 
 
-const createNewPosition = ({referenceTodo, todoList=[], todoToMove, up=false, down=false}) => {
-  let position = 0
-  const todoIndex = todoList.findIndex(todo => (
-    todo.alias == referenceTodo.alias
-  ))
-
-  const isSameParent = (referenceTodo.parent == todoToMove.parent) && (
-    referenceTodo.project == todoToMove.project
-  )
-  const currentPosition = todoToMove.position
-  const previousPosition = ((todoList[todoIndex - 1]) || {}).position
-  const targetPosition = todoList[todoIndex].position
-  const nextPosition = (todoList[todoIndex + 1] || {}).position
-
-  if(down){
-    if(currentPosition == nextPosition && isSameParent){
-      return currentPosition
-    }
-    position = (
-      targetPosition + (
-        nextPosition != undefined ? nextPosition : (
-          targetPosition + 1
-        )
-      )
-    ) / 2
-  } else if(up) {
-    if(currentPosition == previousPosition && isSameParent){
-      return currentPosition
-    }
-    position = (
-      targetPosition + (
-        previousPosition != undefined ? previousPosition : (
-          targetPosition - 1
-        )
-      )
-    ) / 2
-  }
-
-
-  return position;
-}
-
-
-
-
-
 
 export const ActionOnDropTodo = (data) => (dispatch) => {
   const {direction, referenceTodo, todoToMove} = data;
@@ -185,23 +140,27 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
   if(referenceTodo.project != todoToMove.project) return;
 
 
-  const isSameParent = referenceTodo.parent == todoToMove.parent
+  let newPosition;
+  const sameParent = isSameParent(data);
 
-  const previousPosition = todoToMove.position;
-
-  const newPosition = createNewPosition({
-    todoToMove,
-    referenceTodo,
-    up: direction == 'up',
-    down: direction == 'down',
-    todoList: (
-      referenceTodo.parent ? (
-        prm.getTodo({alias: referenceTodo.parent}).subTask
-      ) : prm.getProject({alias: referenceTodo.project}).todoList
-    ),
-  })
-
-  if(newPosition == previousPosition && isSameParent) return;
+  try {
+    newPosition = createNewPosition({
+      direction,
+      todoToMove,
+      referenceTodo,
+      targetTodoList: (
+        referenceTodo.parent ? (
+          prm.getTodo({alias: referenceTodo.parent}).subTask
+        ) : prm.getProject({alias: referenceTodo.project}).todoList
+      ),
+    })
+  } catch (error) {
+    if(error instanceof SamePositionException){
+      return;
+    } else {
+      throw error
+    }
+  }
 
 
   const onSuccess = (response) => {
@@ -218,9 +177,11 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
   }
 
   const parentReference = (
-    (referenceTodo.parent) && !isSameParent
+    !sameParent
   ) ? ({
-    parent: referenceTodo.parent
+    parent: referenceTodo.parent ? (
+      referenceTodo.parent
+    ) : null
   }) : ({})
 
   ApiHelper.todo.patch({
@@ -230,7 +191,6 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
   }, {
     alias: todoToMove.alias
   }).then(onSuccess).catch(onError)
-
 }
 
 

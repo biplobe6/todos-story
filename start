@@ -18,7 +18,7 @@ users_choices () {
 activate_env () {
   activator="venv/bin/activate"
   if [ -f $activator ]; then
-    . venv/bin/activate
+    source venv/bin/activate
   fi
 }
 
@@ -28,16 +28,21 @@ cd ./backend
 
 
 activate_env
-which python
-start_server="$( users_choices )"
 
-if [ "$start_server" == "yes" ]; then
-  echo "Starting..."
-  celery worker -A main -l info -B &
-  python manage.py runserver 8282
-else
-  echo "Abort."
-fi
+which python
+# start_server="$( users_choices )"
+# if [ "$start_server" == "yes" ]; then
+#   echo "Starting..."
+#   celery worker -A main -l info -B &
+#   python manage.py runserver 8282
+# else
+#   echo "Abort."
+# fi
+
+
+echo "Starting..."
+celery worker -A main -l info -B &
+python manage.py runserver 8282
 
 
 cd $CWD
