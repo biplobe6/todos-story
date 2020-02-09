@@ -57,6 +57,22 @@
       > .title, > .expended-view > .title{
         cursor: pointer;
       }
+
+      &.done{
+        > .title, >.story{
+          .done-text{
+            color: rgba(155, 155, 155, 0.5) !important;
+          }
+        }
+
+        &:hover{
+          >.title, >.story{
+            .done-text{
+              color: unset !important;
+            }
+          }
+        }
+      }
     }
 
 

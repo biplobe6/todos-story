@@ -125,22 +125,22 @@ class Todo extends Component {
                       onChange={this.toggleStatus} />
                   </span>
                 </div>
-                <div className="todo-info">
+                <div className={"todo-info" + (done ? " done": '')}>
                   <div
                     title={story}
                     {...drag.dropZoneHandlers}
                     className="short-view title"
                     onDoubleClick={this.toggleEditView}
                     onClick={this.toggleDetailsViewHandler}>
-                    <span className="text-muted">[#{rq} ({progress}%)] </span>
-                    <span>
-                      {done ? <del>{title}</del> : title}
+                    <span className="text-muted">
+                      <span className="done-text">[#{rq} ({progress}%)] </span>
                     </span>
+                    <span className="done-text">{title}</span>
                   </div>
                   {detailsView && (
                     <div className="story text-muted">
                       {story.split('\n').map((text) => (
-                        <p className="mb-0" key={text}>{text}</p>
+                        <p className="mb-0 done-text" key={text}>{text}</p>
                       ))}
                     </div>
                   )}
