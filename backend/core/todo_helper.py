@@ -1,7 +1,7 @@
 import io
 import os
 import logging
-from core.models import Todo, Project
+from core.models import Todo, Project, suppress_auto_now
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import JSONRenderer
 from django.utils.dateparse import parse_datetime
@@ -119,7 +119,7 @@ class TodoHelper(TodoFileHelper):
             alias__in=[todo['alias'] for todo in self.todos_json()]
         ).delete()
         logger.info("{} todo deleted.".format(deleted_todo_count))
-        return (deleted_todo_count, summary)
+        return deleted_todo_count, summary
 
     def _update_old_todos(self):
         todos_alias = []
@@ -153,7 +153,8 @@ class TodoHelper(TodoFileHelper):
             if todo['alias'] not in updated_todos:
                 todo['project_id'] = todo['project']
                 del todo['project']
-                Todo.objects.create(**todo)
+                with suppress_auto_now(Todo, ['created_at', 'updated_at']):
+                    Todo.objects.create(**todo)
                 created_todos.append(todo['alias'])
         logger.info("{} todo imported.".format(len(created_todos)))
         return created_todos

@@ -65,7 +65,8 @@ class ProjectListCreateView(generics.ListCreateAPIView):
             del old_data['description']
 
             old_data.update(data)
-            project = models.Project.objects.create(**old_data)
+            with models.suppress_auto_now(models.Project, ['created_at', 'updated_at']):
+                project = models.Project.objects.create(**old_data)
             serializer = self.get_serializer_class()(project)
             import_project.delay(old_data['alias'])
         else:

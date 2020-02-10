@@ -132,15 +132,13 @@ class Todo extends Component {
                     className="short-view title"
                     onDoubleClick={this.toggleEditView}
                     onClick={this.toggleDetailsViewHandler}>
-                    <span className="text-muted">
-                      <span className="done-text">[#{rq} ({progress}%)] </span>
-                    </span>
-                    <span className="done-text">{title}</span>
+                    <span className="text-muted">[#{rq} ({progress}%)] </span>
+                    <span>{title}</span>
                   </div>
                   {detailsView && (
                     <div className="story text-muted">
                       {story.split('\n').map((text) => (
-                        <p className="mb-0 done-text" key={text}>{text}</p>
+                        <p className="mb-0" key={text}>{text}</p>
                       ))}
                     </div>
                   )}
