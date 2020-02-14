@@ -7,14 +7,13 @@
 ## Installation
 
 ```bash
-chmod +x install
-chmod +x start
+chmod +x app
 
-./install
+./app install
 ```
 
 ## Run Server
 
 ```bash
-./start
+./app start
 ```
