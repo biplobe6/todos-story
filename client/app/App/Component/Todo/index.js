@@ -13,6 +13,7 @@ import TodoList from '../TodoList';
 import TodoAddEditView from './AddEditView';
 import DragNDrop from 'Component/DragNDrop';
 import TodoDropZone from './DropZone';
+import { DIRECTION } from 'App/ProjectManager/position/createNew';
 
 class Todo extends Component {
   constructor(props) {
@@ -28,6 +29,7 @@ class Todo extends Component {
     this.onDragEndHandler = this.onDragEndHandler.bind(this);
     this.onDropUp = this.onDropUp.bind(this);
     this.onDropDown = this.onDropDown.bind(this);
+    this.onDropChild = this.onDropChild.bind(this);
 
     this.state = {
       addView: false,
@@ -49,7 +51,7 @@ class Todo extends Component {
     this.props.onDropTodo({
       todoToMove: this.props.draggingTodo,
       referenceTodo: this.props.todo,
-      direction: 'up',
+      direction: DIRECTION.UP,
     })
   }
 
@@ -57,7 +59,15 @@ class Todo extends Component {
     this.props.onDropTodo({
       todoToMove: this.props.draggingTodo,
       referenceTodo: this.props.todo,
-      direction: 'down',
+      direction: DIRECTION.DOWN,
+    })
+  }
+
+  onDropChild(e){
+    this.props.onDropTodo({
+      todoToMove: this.props.draggingTodo,
+      referenceTodo: this.props.todo,
+      direction: DIRECTION.CHILD,
     })
   }
 
@@ -125,7 +135,11 @@ class Todo extends Component {
                       onChange={this.toggleStatus} />
                   </span>
                 </div>
-                <div className={"todo-info" + (done ? " done": '')}>
+                <div className={(
+                  "todo-info" +
+                  (done ? " done": '') +
+                  (drag.dropZoneEnabled ? " over" : '')
+                )}>
                   <div
                     title={story}
                     {...drag.dropZoneHandlers}
@@ -142,6 +156,10 @@ class Todo extends Component {
                       ))}
                     </div>
                   )}
+                  <TodoDropZone
+                    {...drag.dropZoneHandlers}
+                    onDropHandler={this.onDropChild}
+                    enable={drag.dropZoneEnabled} />
                 </div>
                 {addView && (
                   <TodoAddEditView

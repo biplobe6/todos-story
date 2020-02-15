@@ -2,6 +2,7 @@
 export const DIRECTION = {
   UP: 'up',
   DOWN: 'down',
+  CHILD: 'child',
 }
 
 export class SamePositionException extends Error {
@@ -17,8 +18,10 @@ export class SamePositionException extends Error {
 }
 
 
-export const isSameParent = ({todoToMove, referenceTodo}) => (
-  todoToMove.parent == referenceTodo.parent
+export const isSameParent = ({todoToMove, referenceTodo, direction}) => (
+  direction == DIRECTION.CHILD ? false : (
+    todoToMove.parent == referenceTodo.parent
+  )
 )
 
 const getReferenceTodoDetails = ({referenceTodo, todoToMove, targetTodoList}) => {
@@ -107,11 +110,16 @@ const positionInDownDirection = (args) => {
   )
 }
 
+const positionAsChild = (args) => {
+  return 1
+}
+
 
 
 const positionByDirection = {
   [DIRECTION.UP]: positionInUpDirection,
-  [DIRECTION.DOWN]: positionInDownDirection
+  [DIRECTION.DOWN]: positionInDownDirection,
+  [DIRECTION.CHILD]: positionAsChild,
 }
 
 

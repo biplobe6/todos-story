@@ -1,7 +1,7 @@
 import ApiHelper from "App/Utils/ApiHelper"
 import { ActionList } from "Redux/ActionList"
 import store from 'Root/store';
-import { createNewPosition, isSameParent, SamePositionException } from "App/ProjectManager/position/createNew";
+import { createNewPosition, isSameParent, SamePositionException, DIRECTION } from "App/ProjectManager/position/createNew";
 
 
 
@@ -179,7 +179,9 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
   const parentReference = (
     !sameParent
   ) ? ({
-    parent: referenceTodo.parent ? (
+    parent: direction == DIRECTION.CHILD ? (
+      referenceTodo.alias
+    ) : referenceTodo.parent ? (
       referenceTodo.parent
     ) : null
   }) : ({})
