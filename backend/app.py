@@ -106,6 +106,8 @@ def action_static_files(args):
 
 
 def action_start_app(args):
+	if args.fresh_dist:
+		update_dist()
 	try:
 		active_cmd(
 			'cd {};'.format(BACKEND_DIR) +
@@ -136,7 +138,8 @@ if __name__ == "__main__":
 
 	# ===================================[ START ]====================================
 	start_parser = sub_parser.add_parser('start')
-	start_parser.add_argument('--port', help="Port Number", type=int, default=8282)
+	start_parser.add_argument('--port', '-p', help="Port Number", type=int, default=8282)
+	start_parser.add_argument('--fresh-dist', '-s', help="Start with fresh dist files.", action="store_true")
 	start_parser.set_defaults(func=action_start_app)
 
 

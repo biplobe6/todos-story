@@ -17,3 +17,10 @@ chmod +x app
 ```bash
 ./app start
 ```
+
+## Update
+
+```bash
+git pull origin master
+./app install --clean
+```
