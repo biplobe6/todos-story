@@ -34,7 +34,7 @@ class Todo extends Component {
     this.state = {
       addView: false,
       editView: false,
-      detailsView: false,
+      detailsView: true,
       subMenuExpended: false,
     }
   }

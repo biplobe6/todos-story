@@ -70,6 +70,11 @@ def update_dist():
 		'echo "Updated static/dist files.";'
 	)
 
+def clean_static_files():
+	cmd(
+		'rm -rf {}/static_files'.format(BACKEND_DIR)
+	)
+	print('Static files cleaned.')
 
 def yarn_build():
 	cmd(
@@ -99,6 +104,8 @@ def action_installer(args):
 
 
 def action_static_files(args):
+	if args.clean:
+		clean_static_files()
 	if args.build:
 		yarn_build()
 		collect_static()
@@ -132,7 +139,8 @@ if __name__ == "__main__":
 
 	# ===================================[ STATIC ]===================================
 	static_parser = sub_parser.add_parser('static')
-	static_parser.add_argument('--build', help="Build Frontend.", action="store_true")
+	static_parser.add_argument('--build', '-b', help="Build Frontend.", action="store_true")
+	static_parser.add_argument('--clean', '-c', help="Clean build.", action="store_true")
 	static_parser.set_defaults(func=action_static_files)
 
 
