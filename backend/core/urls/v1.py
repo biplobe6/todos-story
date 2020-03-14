@@ -10,4 +10,7 @@ urlpatterns = [
 
     path('todo', views.TodoListCreateView.as_view(), name='todo-list-create'),
     path('todo/<uuid:alias>', views.TodoDetailsView.as_view(), name='todo-details'),
+
+    path('todo/start/<uuid:alias>', views.TodoStart.as_view(), name='todo-start'),
+    path('todo/stop/<uuid:alias>', views.TodoStop.as_view(), name='todo-stop'),
 ]

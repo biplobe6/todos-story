@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from datetime import timedelta
 from django.db import models
 from uuid import uuid4
 
@@ -46,6 +47,9 @@ class Todo(Meta):
     rq = models.IntegerField(blank=True)
     title = models.TextField()
     story = models.TextField(default="", blank=True)
+    duration = models.DurationField(default=timedelta(seconds=180))
+    time_span = models.DurationField(default=timedelta(seconds=0))
+    wip = models.BooleanField(default=False)
     done = models.BooleanField(default=False, blank=True)
     position = models.FloatField()
     parent = models.ForeignKey(

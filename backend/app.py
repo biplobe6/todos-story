@@ -3,6 +3,9 @@ import sys
 import subprocess
 from argparse import ArgumentParser
 
+
+VERSION = "v1.0.4"
+
 # /app/repo/backend/
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 BACKEND_DIR = BASE_DIR
@@ -126,9 +129,14 @@ def action_start_app(args):
 
 
 
+def action_default(args):
+	if args.version:
+		print(VERSION)
+
 
 if __name__ == "__main__":
 	parser = ArgumentParser()
+	parser.add_argument('--version', '-v', help='App version', action="store_true")
 	sub_parser = parser.add_subparsers(help="Command")
 
 	# ==================================[ INSTALL ]===================================
@@ -152,6 +160,9 @@ if __name__ == "__main__":
 
 
 	args = parser.parse_args()
-	args.func(args)
+	if hasattr(args, 'func'):
+		args.func(args)
+	else:
+		action_default(args)
 
 

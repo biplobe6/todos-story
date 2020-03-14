@@ -1,12 +1,18 @@
 import os
+from rest_framework.views import APIView
 from rest_framework import generics, status
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from core import serializer, models
-from core.tasks import export_project, import_project
+from core import tasks
 from utils.validator import Validator, FieldValidator
 from core.todo_helper import TodoFileHelper
 from rest_framework.response import Response
+
+
+class TodoRunDuplicateException(Exception):
+    pass
 
 
 class AssetsDirValidator(FieldValidator):
@@ -68,7 +74,7 @@ class ProjectListCreateView(generics.ListCreateAPIView):
             with models.suppress_auto_now(models.Project, ['created_at', 'updated_at']):
                 project = models.Project.objects.create(**old_data)
             serializer = self.get_serializer_class()(project)
-            import_project.delay(old_data['alias'])
+            tasks.import_project.delay(old_data['alias'])
         else:
             self.perform_create(serializer)
 
@@ -97,11 +103,47 @@ class TodoDetailsView(generics.RetrieveUpdateDestroyAPIView):
 
 
 def project_export_view(request, alias):
-    export_project.delay(alias)
+    tasks.export_project.delay(alias)
     return HttpResponse()
 
 
 def project_import_view(request, alias):
-    task = import_project.delay(alias)
+    task = tasks.import_project.delay(alias)
     task.wait(timeout=None, interval=0.5)
     return HttpResponse()
+
+
+class TodoStart(APIView):
+    def get(self, request, alias):
+        try:
+            todo = models.Todo.objects.get(alias=alias)
+            if todo.wip:
+                raise TodoRunDuplicateException('Already running.')
+            todo.wip = True
+            todo.save()
+            return Response()
+        except models.Todo.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        except TodoRunDuplicateException as e:
+            return Response(
+                data={"error": [str(e)]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class TodoStop(APIView):
+    def get(self, request, alias):
+        try:
+            todo = models.Todo.objects.get(alias=alias)
+            if not todo.wip:
+                raise TodoRunDuplicateException('Not running.')
+            todo.wip = False
+            todo.save()
+            return Response()
+        except models.Todo.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        except TodoRunDuplicateException as e:
+            return Response(
+                data={"error": [str(e)]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
