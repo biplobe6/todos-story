@@ -41,7 +41,7 @@ def import_project(project_alias):
 @shared_task
 def update_todo():
     logger.info('Updating todo.')
-    update_interval_delta = datetime.timedelta(seconds=UPDATE_INTERVAL)
+    update_interval_delta = UPDATE_INTERVAL
     while True:
         try:
             time.sleep(UPDATE_INTERVAL)
