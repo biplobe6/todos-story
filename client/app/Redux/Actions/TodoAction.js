@@ -141,15 +141,6 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
 
   if(referenceTodo.project != todoToMove.project) return;
 
-  if(!prm.ascOrder){
-    if(direction == DIRECTION.UP){
-      direction = DIRECTION.DOWN
-    } else if (direction == DIRECTION.DOWN) {
-      direction = DIRECTION.UP
-    }
-  }
-
-
   let newPosition;
   const sameParent = isSameParent({
     ...data,
