@@ -4,7 +4,7 @@ import subprocess
 from argparse import ArgumentParser
 
 
-VERSION = "v1.0.4"
+VERSION = "v1.1.0"
 
 # /app/repo/backend/
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -136,26 +136,26 @@ def action_default(args):
 
 if __name__ == "__main__":
 	parser = ArgumentParser()
-	parser.add_argument('--version', '-v', help='App version', action="store_true")
+	parser.add_argument('-v', '--version', help='App version', action="store_true")
 	sub_parser = parser.add_subparsers(help="Command")
 
 	# ==================================[ INSTALL ]===================================
 	install_parser = sub_parser.add_parser('install')
-	install_parser.add_argument('--clean', help="Clean Installation.", action="store_true")
+	install_parser.add_argument('-c', '--clean', help="Clean Installation.", action="store_true")
 	install_parser.set_defaults(func=action_installer)
 
 
 	# ===================================[ STATIC ]===================================
 	static_parser = sub_parser.add_parser('static')
-	static_parser.add_argument('--build', '-b', help="Build Frontend.", action="store_true")
-	static_parser.add_argument('--clean', '-c', help="Clean build.", action="store_true")
+	static_parser.add_argument('-b', '--build', help="Build Frontend.", action="store_true")
+	static_parser.add_argument('-c', '--clean', help="Clean build.", action="store_true")
 	static_parser.set_defaults(func=action_static_files)
 
 
 	# ===================================[ START ]====================================
 	start_parser = sub_parser.add_parser('start')
-	start_parser.add_argument('--port', '-p', help="Port Number", type=int, default=8282)
-	start_parser.add_argument('--fresh-dist', '-s', help="Start with fresh dist files.", action="store_true")
+	start_parser.add_argument('-p', '--port', help="Port Number", type=int, default=8282)
+	start_parser.add_argument('-s', '--fresh-dist', help="Start with fresh dist files.", action="store_true")
 	start_parser.set_defaults(func=action_start_app)
 
 
