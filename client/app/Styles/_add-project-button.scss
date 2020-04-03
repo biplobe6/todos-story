@@ -1,7 +1,8 @@
 #add-project-button{
-  position: absolute;
+  position: fixed;
   bottom: 50px;
   right: 50px;
+  opacity: .4;
 
   outline: none;
   width: 80px;
@@ -16,5 +17,6 @@
   &:hover{
     background-color: #aaa;
     cursor: pointer;
+    opacity: 1;
   }
 }
