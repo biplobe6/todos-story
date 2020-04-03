@@ -218,3 +218,28 @@ export const ActionToggleTodoStatus = (data) => (dispatch) => {
   ).then(onSuccess).catch(onError)
 }
 
+export const ActionGetTodo = (alias) => (dispatch) => {
+  const onSuccess = (response) => {
+    dispatch({
+      type: ActionList.updateTodo,
+      payload: {
+        data: response.getData()
+      }
+    })
+  }
+  const onError = (error) => {
+    console.error(error)
+  }
+  ApiHelper.todo.get({alias}).then(onSuccess).catch(onError)
+}
+
+
+export const ActionStartCountdown = (alias) => (dispatch) => {
+  ApiHelper.startTodo.get({alias})
+}
+
+
+export const ActionStopCountdown = (alias) => (dispatch) => {
+  ApiHelper.stopTodo.get({alias})
+}
+

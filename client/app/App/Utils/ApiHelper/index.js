@@ -18,7 +18,13 @@ export const ApiHelper = {
   }),
   todo: registerApi({
     url: ({alias}) => `/todo/${alias}`
-  })
+  }),
+  startTodo: registerApi({
+    url: ({alias}) => `/todo/start/${alias}`
+  }),
+  stopTodo: registerApi({
+    url: ({alias}) => `/todo/stop/${alias}`
+  }),
 }
 
 export default ApiHelper

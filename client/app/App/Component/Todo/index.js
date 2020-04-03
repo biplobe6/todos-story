@@ -7,13 +7,16 @@ import {
   AcitonDeleteTodo,
   ActionOnDragTodo,
   ActionOnDropTodo,
-  ActionToggleTodoStatus
+  ActionToggleTodoStatus,
+  ActionStartCountdown,
+  ActionStopCountdown
 } from 'Redux/Actions/TodoAction';
 import TodoList from '../TodoList';
 import TodoAddEditView from './AddEditView';
 import DragNDrop from 'Component/DragNDrop';
 import TodoDropZone from './DropZone';
 import { DIRECTION } from 'App/ProjectManager/position/createNew';
+import Duration from './Duration';
 
 class Todo extends Component {
   constructor(props) {
@@ -105,10 +108,20 @@ class Todo extends Component {
   }
 
   render() {
-    const {todo, project} = this.props;
+    const {
+      todo,
+      project,
+      startCountdown,
+      stopCountdown
+    } = this.props;
     const {title, rq, story, subTask, done} = todo;
     const progress = parseInt(todo.progress * 10) / 10
-    const {addView, editView, detailsView, subMenuExpended} = this.state;
+    const {
+      addView,
+      editView,
+      detailsView,
+      subMenuExpended
+    } = this.state;
     return (
       <DragNDrop
         onDragStart={this.onDragStartHandler}
@@ -122,7 +135,11 @@ class Todo extends Component {
             {!editView && (
               <div
                 draggable
-                className="todo-short-info"
+                className={(
+                  "todo-short-info" +
+                  (done ? " done": '') +
+                  (drag.dropZoneEnabled ? " over" : '')
+                )}
                 onDragEnd={drag.onDragEndHandler}
                 onDragStart={drag.onDragStartHandler}>
                 <div className="left menu-container">
@@ -136,11 +153,7 @@ class Todo extends Component {
                       onChange={this.toggleStatus} />
                   </span>
                 </div>
-                <div className={(
-                  "todo-info" +
-                  (done ? " done": '') +
-                  (drag.dropZoneEnabled ? " over" : '')
-                )}>
+                <div className="todo-info">
                   <div
                     title={story}
                     {...drag.dropZoneHandlers}
@@ -183,6 +196,10 @@ class Todo extends Component {
                     title="Delete"
                     onClick={this.deleteTodo}
                     className="menu"><i className="fa fa-trash" /></span>
+                  <Duration
+                    todo={todo}
+                    startCountdown={startCountdown}
+                    stopCountdown={stopCountdown} />
                 </div>
               </div>
             )}
@@ -225,6 +242,8 @@ const mapDispatchToProps = {
   updateDraggingTodo: ActionOnDragTodo,
   onDropTodo: ActionOnDropTodo,
   toggleTodoStatus: ActionToggleTodoStatus,
+  startCountdown: ActionStartCountdown,
+  stopCountdown: ActionStopCountdown,
 }
 export default connect(mapStateToProps, mapDispatchToProps)(
   Todo
