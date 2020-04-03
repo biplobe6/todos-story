@@ -1,86 +1,125 @@
 import { ActionList } from "Redux/ActionList"
-import ProjectManager from "App/ProjectManager";
+import { ProjectManager } from "App/ProjectManager";
 
 const initState = {
-  prm: new ProjectManager(),
+  prms: {},
   list: [],
   draggingTodo: null,
 }
 
+
+const createProjectManager = () => {
+  const prm = new ProjectManager()
+  prm.ascOrder = false
+  return prm
+}
+
 const reducerGetProjectList = (state, action) => {
   const {data} = action.payload;
-  const {prm} = state;
-  prm.addProjectList(data);
+  const prms = {}
+  const projectList = data.map(project => {
+    const prm = createProjectManager()
+    prms[project.alias] = prm
+    return ({
+      ...project,
+      prm,
+    })
+  })
 
   return ({
     ...state,
-    list: [...prm.list],
+    list: [...projectList],
+    prms,
   })
 }
 
 
 const reducerAddProject = (state, action) => {
   const {data} = action.payload;
-  const {prm} = state;
-  prm.addProject(data);
+  const prm = createProjectManager()
+  const project = {
+    ...data,
+    prm,
+  }
   return ({
     ...state,
-    list: [...prm.list],
+    prms: {
+      ...state.prm,
+      [data.alias]: prm
+    },
+    list: [...state.list, project],
   })
 }
 
 
 const reducerDeleteProject = (state, action) => {
   const {data} = action.payload;
-  const {prm} = state;
+  delete state.prms[data.alias]
 
-  prm.deleteProject(data)
+  const projectList = state.list.filter(project => (
+    project.alias != data.alias
+  ))
+
   return ({
     ...state,
-    list: [...prm.list],
+    prms: {...state.prms},
+    list: [...projectList],
   })
 }
 
 
 const reducerUpdateProject = (state, action) => {
   const {data} = action.payload;
-  const {prm} = state;
+  const projectIndex = state.list.findIndex(project => (
+    project.alias == data.alias
+  ))
+  state.list[projectIndex] = {
+    ...state.list[projectIndex],
+    ...data
+  }
 
-  prm.updateProject(data)
   return ({
     ...state,
-    list: [...prm.list],
+    list: [...state.list],
   })
 }
 
 
 const reducerGetTodos = (state, action) => {
-  const {data} = action.payload;
-  const {prm} = state;
+  const {data, project} = action.payload;
+  const {prms, list} = state;
+  const prm = createProjectManager()
+  const projectIndex = list.findIndex(oldProject => (
+    oldProject.alias = project.alias
+  ))
+
+  list[projectIndex] = {
+    ...project,
+    prm,
+  }
 
   data.forEach(todo => {
-    if(prm.todosHash[todo.alias]){
-      prm.updateTodo(todo)
-    } else {
-      prm.addTodo(todo)
-    }
+    prm.addTodo(todo)
   })
 
   return ({
     ...state,
-    list: [...prm.list],
+    prms: {
+      ...prms,
+      [project.alias]: prm,
+    },
+    list: [...list],
   })
 }
 
 
 const reducerAddTodo = (state, action) => {
   const {data} = action.payload;
-  const {prm} = state;
-
+  const prm = state.prms[data.project]
   prm.addTodo(data);
   return ({
     ...state,
-    list: [...prm.list],
+    list: [...state.list],
   })
 }
 
@@ -88,12 +127,12 @@ const reducerAddTodo = (state, action) => {
 
 const reducerDeleteTodo = (state, action) => {
   const {data} = action.payload;
-  const {prm} = state;
+  const prm = state.prms[data.project];
   prm.deleteTodo(data);
 
   return ({
     ...state,
-    list: [...prm.list],
+    list: [...state.list],
   })
 }
 
@@ -101,12 +140,12 @@ const reducerDeleteTodo = (state, action) => {
 
 const reducerUpdateTodo = (state, action) => {
   const {data} = action.payload;
-  const {prm} = state;
+  const prm = state.prms[data.project];
   prm.updateTodo(data);
 
   return ({
     ...state,
-    list: [...prm.list],
+    list: [...state.list],
   })
 }
 

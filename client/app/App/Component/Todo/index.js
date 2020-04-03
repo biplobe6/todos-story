@@ -106,7 +106,8 @@ class Todo extends Component {
 
   render() {
     const {todo, project} = this.props;
-    const {title, rq, story, subTask, progress, done} = todo;
+    const {title, rq, story, subTask, done} = todo;
+    const progress = parseInt(todo.progress * 10) / 10
     const {addView, editView, detailsView, subMenuExpended} = this.state;
     return (
       <DragNDrop

@@ -23,7 +23,7 @@ class ProjectList extends Component {
         {projectList.map((project) => (
           <Project
             key={project.alias}
-            updatedAt={project.updatedAt}
+            updatedAt={project.prm.updatedAt}
             project={project}
             getTodos={this.props.getTodos}
             deleteProject={this.props.deleteProject}

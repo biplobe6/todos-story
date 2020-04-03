@@ -74,7 +74,9 @@ class Project extends Component {
   render() {
     const {showTodoList, editView, todoAddView} = this.state;
     const {project} = this.props;
-    const {title, description, id, todoList, progress} = project;
+    const {title, description, prm} = project;
+    const todoList = prm.todos;
+    const progress = parseInt(prm.progress * 10) / 10
     return (
       <div
         className="project-view">

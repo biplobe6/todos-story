@@ -5,15 +5,15 @@ const swap = (items=[], firstIndex, secondIndex) => {
 }
 
 
-const partition = (items=[], left, right) => {
+const partition = (items=[], left, right, asc=true) => {
   const pivot = items[Math.floor((right + left) / 2)].position
   let i = left, j = right;
 
   while( i <= j){
-    while(items[i].position < pivot){
+    while(asc ? (items[i].position < pivot) : (items[i].position > pivot)){
       i++;
     }
-    while(items[j].position > pivot){
+    while(asc ? (items[j].position > pivot) : (items[j].position < pivot)){
       j--;
     }
 
@@ -27,18 +27,18 @@ const partition = (items=[], left, right) => {
   return i
 }
 
-const quickSort = (items=[], left, right) => {
+const quickSort = (items=[], left, right, asc=true) => {
   let index;
 
   if(items.length > 1){
-    index = partition(items, left, right)
+    index = partition(items, left, right, asc)
 
     if(left < (index - 1)){
-      quickSort(items, left, (index - 1))
+      quickSort(items, left, (index - 1), asc)
     }
 
     if(index < right){
-      quickSort(items, index, right)
+      quickSort(items, index, right, asc)
     }
   }
 
@@ -46,9 +46,9 @@ const quickSort = (items=[], left, right) => {
 }
 
 
-export const sortByPosition = (dataList=[]) => {
+export const sortByPosition = (dataList=[], asc=true) => {
   if(dataList.length > 1){
-    quickSort(dataList, 0, (dataList.length - 1))
+    quickSort(dataList, 0, (dataList.length - 1), asc)
   }
 }
 

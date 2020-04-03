@@ -7,13 +7,13 @@ import { createNewPosition, isSameParent, SamePositionException, DIRECTION } fro
 
 const getPosition = ({project, parent}) => {
   const state = store.getState()['project']
-  const {prm} = state;
+  const prm = state.prms[project]
 
 
   const todoList = parent ? (
     prm.getTodo({alias: parent}).subTask
   ) : (
-    prm.getProject({alias: project}).todoList
+    prm.todos
   )
 
   let position = 1;
@@ -134,14 +134,27 @@ export const ActionOnDragTodo = (data) => (dispatch) => {
 
 
 export const ActionOnDropTodo = (data) => (dispatch) => {
-  const {direction, referenceTodo, todoToMove} = data;
-  const {prm} = store.getState()['project'];
+  const {referenceTodo, todoToMove} = data;
+  let {direction} = data;
+  const state = store.getState()['project'];
+  const prm = state.prms[todoToMove.project]
 
   if(referenceTodo.project != todoToMove.project) return;
 
+  if(!prm.ascOrder){
+    if(direction == DIRECTION.UP){
+      direction = DIRECTION.DOWN
+    } else if (direction == DIRECTION.DOWN) {
+      direction = DIRECTION.UP
+    }
+  }
+
 
   let newPosition;
-  const sameParent = isSameParent(data);
+  const sameParent = isSameParent({
+    ...data,
+    direction,
+  });
 
   try {
     newPosition = createNewPosition({
@@ -151,7 +164,7 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
       targetTodoList: (
         referenceTodo.parent ? (
           prm.getTodo({alias: referenceTodo.parent}).subTask
-        ) : prm.getProject({alias: referenceTodo.project}).todoList
+        ) : prm.todos
       ),
     })
   } catch (error) {
