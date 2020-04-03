@@ -1,5 +1,6 @@
 backend/env
 backend/venv
+backend/tmp
 **/.ipynb_checkpoints
 **/*.i.ipynb
 **/__pycache__
