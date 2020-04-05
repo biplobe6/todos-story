@@ -28,34 +28,46 @@ tasks_path = os.path.abspath(
 )
 
 
-@worker_shutting_down.connect
-def shutdown_hook(*args, **kwargs):
-    with open(tasks_path, 'r') as tasks_file:
-        tasks = json.loads(tasks_file.read())
-    for task_id in tasks[UPDATE_TODO]:
-        task = AbortableAsyncResult(task_id)
-        task.abort()
-    with open(tasks_path, 'w') as tasks_file:
-        tasks_file.write(
-            json.dumps({})
-        )
+def abort_task(task_id):
+    task = AbortableAsyncResult(task_id)
+    task.abort()
 
-def save_task_id(task_id, name):
+
+def read_tasks():
     try:
         with open(tasks_path, 'r') as tasks_file:
             tasks = json.loads(tasks_file.read())
     except FileNotFoundError:
         tasks = {}
-        os.makedirs(os.path.dirname(tasks_path), exist_ok=True)
+    return tasks
+
+
+def write_tasks(tasks):
+    os.makedirs(os.path.dirname(tasks_path), exist_ok=True)
+    with open(tasks_path, 'w') as tasks_file:
+        tasks_file.write(json.dumps(tasks))
+
+
+def abort_task_update_todo():
+    tasks = read_tasks()
+    for task_id in tasks.get(UPDATE_TODO, []):
+        abort_task(task_id)
+    tasks[UPDATE_TODO] = []
+    write_tasks(tasks)
+
+
+
+@worker_shutting_down.connect
+def shutdown_hook(*args, **kwargs):
+    abort_task_update_todo()
+
+
+def save_task_id(name, task_id):
+    tasks = read_tasks()
     if name not in tasks:
         tasks[name] = []
     tasks[name].append(task_id)
-
-    with open(tasks_path, 'w') as tasks_file:
-        tasks_file.write(
-            json.dumps(tasks)
-        )
-
+    write_tasks(tasks)
 
 
 @shared_task
@@ -82,8 +94,9 @@ def import_project(project_alias):
 
 @shared_task(bind=True, base=AbortableTask)
 def update_todo(self):
+    abort_task_update_todo()
     task_id = str(self.request.id)
-    save_task_id(task_id, UPDATE_TODO)
+    save_task_id(UPDATE_TODO, task_id)
     logger.info('Updating todo.')
     update_interval_delta = UPDATE_INTERVAL
     while not self.is_aborted():
