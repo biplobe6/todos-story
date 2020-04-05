@@ -65,6 +65,7 @@ const staticFilesPath = fullPath(PATH.staticFiles);
 module.exports = (env) => {
     // /src/app/index.js
     const indexJs = `${srcPath}/index.js`
+    const indexDevJs = `${srcPath}/index.dev.js`
     const htmlFileName = 'index.html'
 
     // /src/public/index.html
@@ -150,7 +151,8 @@ module.exports = (env) => {
             ],
             main: [
                 ...(PROD_MODE ? [] : ['react-hot-loader/patch']),
-                indexJs
+                indexJs,
+                ...(PROD_MODE ? [] : [indexDevJs]),
             ]
         },
         output: {
