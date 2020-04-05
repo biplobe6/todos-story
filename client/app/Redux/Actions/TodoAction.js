@@ -200,7 +200,7 @@ export const ActionOnDropTodo = (data) => (dispatch) => {
 }
 
 
-export const ActionToggleTodoStatus = (data) => (dispatch) => {
+export const ActionUpdateTodo = (data) => (dispatch) => {
   const onSuccess = (response) => {
     dispatch({
       type: ActionList.updateTodo,

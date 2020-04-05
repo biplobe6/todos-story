@@ -44,6 +44,18 @@
         > .menu {
           &.clock {
             opacity: 1;
+
+            &.duration{
+              > .duration-field{
+                > input{
+                  height: 20px;
+                }
+              }
+            }
+
+            &.countdown{
+              cursor: text;
+            }
           }
         }
 

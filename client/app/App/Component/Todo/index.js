@@ -7,7 +7,7 @@ import {
   AcitonDeleteTodo,
   ActionOnDragTodo,
   ActionOnDropTodo,
-  ActionToggleTodoStatus,
+  ActionUpdateTodo,
   ActionStartCountdown,
   ActionStopCountdown
 } from 'Redux/Actions/TodoAction';
@@ -101,7 +101,7 @@ class Todo extends Component {
   }
 
   toggleStatus(event){
-    this.props.toggleTodoStatus({
+    this.props.updateTodoData({
       alias: this.props.todo.alias,
       done: event.target.checked,
     })
@@ -112,7 +112,8 @@ class Todo extends Component {
       todo,
       project,
       startCountdown,
-      stopCountdown
+      stopCountdown,
+      updateTodoData
     } = this.props;
     const {title, rq, story, subTask, done} = todo;
     const progress = parseInt(todo.progress * 10) / 10
@@ -120,7 +121,6 @@ class Todo extends Component {
       addView,
       editView,
       detailsView,
-      subMenuExpended
     } = this.state;
     return (
       <DragNDrop
@@ -199,6 +199,7 @@ class Todo extends Component {
                   <Duration
                     todo={todo}
                     startCountdown={startCountdown}
+                    updateTodoData={updateTodoData}
                     stopCountdown={stopCountdown} />
                 </div>
               </div>
@@ -241,7 +242,7 @@ const mapDispatchToProps = {
   deleteTodo: AcitonDeleteTodo,
   updateDraggingTodo: ActionOnDragTodo,
   onDropTodo: ActionOnDropTodo,
-  toggleTodoStatus: ActionToggleTodoStatus,
+  updateTodoData: ActionUpdateTodo,
   startCountdown: ActionStartCountdown,
   stopCountdown: ActionStopCountdown,
 }

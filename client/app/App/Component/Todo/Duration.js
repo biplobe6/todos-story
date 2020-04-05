@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import DurationField from 'Component/Input/DurationField';
 
 class Clock extends Component {
   constructor(props) {
@@ -76,8 +77,16 @@ class Clock extends Component {
 
   render(){
     const {time} = this.state;
-    return time
+    return (
+      <span onClick={this.props.onClick}>
+        {time}
+      </span>
+    )
   }
+}
+
+Clock.defaultProps = {
+  onClick: () => {},
 }
 
 
@@ -89,6 +98,8 @@ class Duration extends Component {
     this.startCountdown = this.startCountdown.bind(this);
     this.stopCountdownInterval = this.stopCountdownInterval.bind(this);
     this.stopCountdown = this.stopCountdown.bind(this);
+    this.toggleEditView = this.toggleEditView.bind(this);
+    this.onSubmitDurationEdit = this.onSubmitDurationEdit.bind(this);
 
     this.timer = null
 
@@ -96,6 +107,7 @@ class Duration extends Component {
       counting: false,
       timeSpan: 0,
       busy: false,
+      edit: false,
     }
   }
 
@@ -175,10 +187,27 @@ class Duration extends Component {
     this.props.stopCountdown(this.props.todo.alias)
   }
 
+  toggleEditView(){
+    this.setState({
+      edit: !this.state.edit
+    })
+  }
+
+  onSubmitDurationEdit(e){
+    this.setState({
+      edit: false,
+    })
+    const {todo} = this.props;
+    this.props.updateTodoData({
+      alias: todo.alias,
+      duration: e.totalSec,
+    })
+  }
+
 
   render() {
     const {todo} = this.props;
-    const {counting, timeSpan} = this.state;
+    const {counting, timeSpan, edit} = this.state;
     const remaining = (todo.duration - timeSpan)
     return (
       <Fragment>
@@ -198,7 +227,16 @@ class Duration extends Component {
           </span>
         )}
         <span className="menu clock duration">
-          <Clock time={todo.duration} />
+          {edit ? (
+            <DurationField
+              onClose={this.toggleEditView}
+              duration={todo.duration}
+              onSubmit={this.onSubmitDurationEdit} />
+          ) : (
+            <Clock
+              time={todo.duration}
+              onClick={this.toggleEditView} />
+          )}
         </span>
         {(timeSpan > 0) && (
           <Fragment>
