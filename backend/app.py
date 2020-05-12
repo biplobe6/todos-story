@@ -147,8 +147,8 @@ if __name__ == "__main__":
 
 	# ===================================[ STATIC ]===================================
 	static_parser = sub_parser.add_parser('static')
-	static_parser.add_argument('-b', '--build', help="Build Frontend.", action="store_true")
-	static_parser.add_argument('-c', '--clean', help="Clean build.", action="store_true")
+	static_parser.add_argument('-b', '--build', help="Build frontend and send static files into 'static_files' dir.", action="store_true")
+	static_parser.add_argument('-c', '--clean', help="Clean Build Files. (delete old content of 'static_files')", action="store_true")
 	static_parser.set_defaults(func=action_static_files)
 
 
