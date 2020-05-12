@@ -76,7 +76,7 @@ class Project extends Component {
     const {project} = this.props;
     const {title, description, prm} = project;
     const todoList = prm.todos;
-    const progress = parseInt(prm.progress * 10) / 10
+    const progress = prm.progress
     return (
       <div
         className="project-view">

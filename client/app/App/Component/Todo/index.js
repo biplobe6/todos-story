@@ -115,8 +115,7 @@ class Todo extends Component {
       stopCountdown,
       updateTodoData
     } = this.props;
-    const {title, rq, story, subTask, done} = todo;
-    const progress = parseInt(todo.progress * 10) / 10
+    const {title, rq, story, subTask, done, progress} = todo;
     const {
       addView,
       editView,

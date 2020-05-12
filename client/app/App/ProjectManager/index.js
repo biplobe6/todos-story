@@ -6,7 +6,6 @@ export class MetaProjectManager {
     this.todosHash = {}
     this.updatedAt = (new Date()).getTime()
     this.progress = 0
-    this.ascOrder = true
   }
 
   updateProgress(todos, container){}
@@ -18,6 +17,8 @@ export class MetaProjectManager {
   addToProgress(todo){}
 
   sort(todos){}
+
+  sortAll(){}
 }
 
 export class AbstractProjectManager extends MetaProjectManager {
@@ -152,9 +153,13 @@ export const MixinTimerProgress = (ProjectManager=AbstractProjectManager) => cla
     }
   }
 
+  addDefaultProgressHigh(todo){
+    todo.progress = 100
+  }
+
   addToProgress(todo){
     if(todo.done){
-      todo.progress = 100
+      this.addDefaultProgressHigh(todo)
     } else {
       this.updateProgress(
         todo.subTask,
@@ -169,7 +174,34 @@ export const MixinTimerProgress = (ProjectManager=AbstractProjectManager) => cla
   }
 }
 
+
+export const MixinFmtTimerProgress = (ProjectManager=AbstractProjectManager) => {
+  return class extends MixinTimerProgress(ProjectManager) {
+    updateProgress(todos, container){
+      container._progress = 0
+      let totalWeight = 0
+      todos.forEach(({duration}) => {
+        totalWeight += duration
+      });
+      todos.forEach(({_progress, duration}) => {
+        container._progress += (duration / totalWeight) * _progress
+      })
+      container.progress = parseInt(container._progress * 10) / 10
+    }
+
+    addDefaultProgressHigh(todo){
+      todo.progress = 100
+      todo._progress = 100
+    }
+  }
+}
+
 export const MixinSorting = (ProjectManager=AbstractProjectManager) => class extends ProjectManager {
+  constructor(props) {
+    super(props);
+    this.ascOrder = true
+  }
+
   sort(todos){
     sortByPosition(todos, this.ascOrder)
   }
@@ -182,5 +214,15 @@ export class ProjectManager extends (
     )
   )
 ) {}
+
+
+export class ProjectManagerFmtp extends (
+  MixinSorting(
+    MixinFmtTimerProgress(
+      AbstractProjectManager
+    )
+  )
+) {}
+
 
 export default ProjectManager

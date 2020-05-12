@@ -1,5 +1,5 @@
 import { ActionList } from "Redux/ActionList"
-import { ProjectManager } from "App/ProjectManager";
+import { ProjectManagerFmtp } from "App/ProjectManager";
 
 const initState = {
   prms: {},
@@ -9,7 +9,7 @@ const initState = {
 
 
 const createProjectManager = () => {
-  const prm = new ProjectManager()
+  const prm = new ProjectManagerFmtp()
   prm.ascOrder = false
   return prm
 }
