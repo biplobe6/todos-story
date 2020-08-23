@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[8],{"./node_modules/bootstrap/dist/css/bootstrap.css":function(o,s,n){},"./node_modules/font-awesome/css/font-awesome.min.css":function(o,s,n){}}]);

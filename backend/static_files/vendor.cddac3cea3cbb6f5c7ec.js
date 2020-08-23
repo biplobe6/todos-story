@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[22],[function(s,o,e){e("./node_modules/bootstrap/dist/css/bootstrap.css"),s.exports=e("./node_modules/font-awesome/css/font-awesome.min.css")}],[[0,0,8,3]]]);

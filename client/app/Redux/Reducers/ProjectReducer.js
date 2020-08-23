@@ -90,7 +90,7 @@ const reducerGetTodos = (state, action) => {
   const {prms, list} = state;
   const prm = createProjectManager()
   const projectIndex = list.findIndex(oldProject => (
-    oldProject.alias = project.alias
+    oldProject.alias == project.alias
   ))
 
   list[projectIndex] = {
