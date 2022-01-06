@@ -1,6 +1,6 @@
 amqp==2.5.2
 billiard==3.6.2.0
-celery==4.4.0
+celery==5.2.2
 Django==2.2.15
 django-celery-beat==1.6.0
 django-filter==2.2.0
